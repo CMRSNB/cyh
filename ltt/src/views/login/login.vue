@@ -1,0 +1,94 @@
+<template>
+  <div class="heder">
+    <div class="heder-top">
+      <router-link to="/reg" active-class=".logins">注册/</router-link>
+      <router-link to="/login" active-class=".logins">登录</router-link>
+    </div>
+    <div>
+      <van-form @submit="onSubmit">
+        <van-field
+          v-model="username"
+          name="用户名"
+          label="用户名"
+          placeholder="用户名"
+          :rules="[{ required: true, message: '请填写用户名' }]"
+        />
+        <van-field
+          v-model="password"
+          type="password"
+          name="密码"
+          label="密码"
+          placeholder="密码"
+          :rules="[{ required: true, message: '请填写密码' }]"
+        />
+        <div class="login-three">
+          <router-link to="/forget">忘记密码</router-link>
+        </div>
+
+        <div style="margin: 16px">
+          <van-button round block type="info" native-type="submit"
+            >登录</van-button
+          >
+        </div>
+      </van-form>
+    </div>
+  </div>
+</template>
+<script>
+import { Toast } from "vant";
+export default {
+  data() {
+    return {
+      username: "",
+
+      password: "",
+    };
+  },
+  methods: {
+    onClickLeft() {
+      Toast("返回");
+    },
+    onClickRight() {
+      Toast("按钮");
+    },
+    onSubmit(values) {
+      // console.log(values);
+      this.axios
+        .post("/user/login", {
+          username: this.username,
+          password: this.password,
+        })
+        .then((result) => {
+          Toast(result.data.msg);
+          console.log(result);
+          console.log(result.data);
+          if (result.data.code == "0") {
+            this.$router.push("/");
+            localStorage.username = result.data.username;
+            localStorage.tokenID = result.data.token;
+            localStorage.uid = result.data.uid;
+          }
+        });
+    },
+  },
+  mounted() {},
+};
+</script>
+<style lang="less">
+.heder-top {
+  width: 375px;
+  height: 50px;
+  background-color: @color;
+  text-align: center;
+  line-height: 50px;
+}
+.heder-top a {
+  color: rgb(255, 255, 255);
+}
+.heder-top a .logins {
+  color: @color;
+}
+.login-three {
+  margin: 10px 10px;
+}
+</style>

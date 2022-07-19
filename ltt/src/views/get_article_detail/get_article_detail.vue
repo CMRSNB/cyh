@@ -1,0 +1,475 @@
+<template>
+  <div class="detail">
+    <div class="detail-top"><van-nav-bar title="文章详情" /></div>
+
+    <div class="detail-tow">
+      <h4>{{ wzxq.title }}</h4>
+    </div>
+    <div class="detail-three">
+      <div class="detail-three-list">
+        <img :src="wzxq.avatar" alt="" />
+        <span>{{ wzxq.nickname }}</span>
+        <h4>2021-12-12</h4>
+      </div>
+      <div class="detail-three-right">
+        <van-button type="primary" size="mini"
+          ><van-icon name="plus" />关注</van-button
+        >
+      </div>
+    </div>
+    <div class="detail-for">
+      <p>
+        {{ wzxq.content }}
+      </p>
+    </div>
+    <div class="detail-five" v-for="(v, i) in pllb" :key="i">
+      <div class="detail-five-list">
+        <div class="detail-five-list-list">
+          <img :src="v.info.avatar" alt="" />
+        </div>
+        <div class="detail-five-list-right">
+          <h3>{{ v.info.nickname }}</h3>
+          <h4>{{ v.content }}</h4>
+          <div>
+            <span> {{ timestampToTime(v.create_time) }}</span>
+            <em @click="HFPL(v)">{{ v.reply_num }}回复</em>
+          </div>
+        </div>
+      </div>
+      <div class="detail-five-right">
+        <div class="detail-five-right-left"></div>
+        <div class="detail-five-right-right">
+          <van-icon
+            name="good-job"
+            :style="{ color: v.is_like ? 'red' : '#ccc' }"
+            @click="pldz(v, i)"
+          />
+          <span>{{ v.like_count }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="detail-six">
+      <div class="detail-six-list">
+        <van-cell-group>
+          <van-field v-model="value" placeholder="写评论" autosize />
+        </van-cell-group>
+      </div>
+      <div class="detail-six-right">
+        <van-icon name="comment" @click="add" />
+        <van-icon
+          name="star"
+          @click="wzsc"
+          :style="{ color: WZSC ? 'red' : '#ccc' }"
+        />
+        <van-icon
+          name="good-job"
+          @click="wzdz"
+          :style="{ color: WZDZ ? 'red' : '#ccc' }"
+        />
+        <van-icon name="share" />
+      </div>
+    </div>
+    <div class="detail-sevent">
+      <van-action-sheet v-model="show">
+        <div class="content">
+          <van-form @submit="onSubmit">
+            <van-field
+              v-model="HF"
+              name="回复"
+              placeholder="回复"
+              :rules="[{ required: true, message: '回复' }]"
+            />
+            <div style="margin: 16px">
+              <van-button round block type="info" native-type="submit"
+                >发送</van-button
+              >
+            </div>
+          </van-form>
+        </div>
+      </van-action-sheet>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      HF: "",
+      message: "",
+      show: false,
+      WZDZ: false,
+      WZSC: false,
+      value: "",
+      authorID: "",
+      wzxq: {},
+      pllb: [],
+      sttus: 1,
+      reply_comment_id: "",
+    };
+  },
+  methods: {
+    erjipinglun() {
+      this.$router.push({
+        name: "erjipinglun",
+        params: {
+          reply_comment_id: this.reply_comment_id,
+          authorID: this.authorID,
+        },
+      });
+    },
+    HFPL(v, i) {
+      this.show = true;
+      console.log(v._id);
+      this.reply_comment_id = v._id;
+    },
+    onSubmit(values) {
+      this.axios
+        .post("/api/add_comment", {
+          user_id: localStorage.getItem("uid"),
+          article_id: this.authorID,
+          comment_type: 1,
+          reply_comment_id: this.reply_comment_id,
+          content: this.HF,
+        })
+        .then((res) => {
+          console.log(res);
+        });
+      // console.log("submit", values);
+    },
+    wzsc() {
+      this.WZSC = !this.WZSC;
+      if (this.WZSC == true) {
+        this.axios
+          .post("/api/add_fav", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      } else {
+        this.axios
+          .post("/api/remove_fav", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      }
+    },
+    pldz(v, i) {
+      console.log(i);
+      v.is_like = !v.is_like;
+      console.log(v.is_like);
+      console.log(v);
+      if (v.is_like == true) {
+        v.like_count++;
+        this.axios
+          .post("/api/comment_like", {
+            user_id: localStorage.getItem("uid"),
+            comment_id: v._id,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      } else {
+        v.like_count--;
+        this.axios
+
+          .post("/api/comment_unlike", {
+            user_id: localStorage.getItem("uid"),
+            comment_id: v._id,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      }
+    },
+    wzdz() {
+      this.WZDZ = !this.WZDZ;
+      if (this.WZDZ == true) {
+        this.axios
+          .post("/api/like", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      } else {
+        this.axios
+          .post("/api/unlike", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+          })
+          .then((res) => {
+            console.log(res);
+          });
+      }
+    },
+    add() {
+      this.axios
+        .post("/api/add_comment", {
+          user_id: localStorage.getItem("uid"),
+          article_id: this.authorID,
+          comment_type: 0,
+          // reply_comment_id: "",
+          content: this.value,
+        })
+        .then((res) => {
+          // console.log(res);
+        });
+    },
+    // 时间戳：1637244864707
+    /* 时间戳转换为时间 */
+    timestampToTime(timestamp) {
+      timestamp = timestamp ? timestamp : null;
+      let date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + "-";
+      let M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      let D =
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
+      let h =
+        (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+      let m =
+        (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
+        ":";
+      let s =
+        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      return Y + M + D;
+    },
+  },
+  mounted() {
+    this.authorID = this.$route.params.authorID;
+    // console.log(this.authorID);
+    this.axios
+      .post("/api/get_article_detail", {
+        article_id: this.authorID,
+      })
+      .then((res) => {
+        // console.log(res.data.data);
+        this.wzxq = res.data.data;
+        this.articleID = res.data.data.article_id;
+        // console.log(this.wzxq);
+      });
+
+    this.axios
+      .post("/api/get_comment_list", {
+        article_id: this.authorID,
+        skip: 0,
+        limit: 10,
+        user_id: localStorage.getItem("uid"),
+      })
+      .then((res) => {
+        console.log(res.data.data);
+        this.pllb = res.data.data;
+      });
+  },
+};
+</script>
+<style lang="less" scoped>
+.content {
+  padding: 16px 16px 100px;
+}
+.detail {
+  // width: 375px;
+  border-color: #adadac;
+  box-sizing: border-box;
+}
+.child {
+  width: 40px;
+  height: 40px;
+  background: #f2f3f5;
+  border-radius: 4px;
+}
+.detail-tow {
+  width: 370px;
+  height: 30px;
+  // padding-left: 10px;
+  margin: 10px 0;
+}
+.detail-tow h4 {
+  // text-align: center;
+  padding-left: 10px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 300px;
+  font-size: 18px;
+}
+.detail-three {
+  height: 40px;
+  border-bottom: 1px solid #000;
+
+  padding-bottom: 20px;
+}
+.detail-three-list img {
+  float: left;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+.detail-three-list {
+  width: 150px;
+  height: 30px;
+  margin-left: 10px;
+  float: left;
+
+  // overflow: hidden;
+}
+.detail-three-list h4 {
+  width: 100px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.detail-three-list span {
+  display: inline-block;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// .detail-three-list h3 {
+//   width: 375px;
+//   margin: 0px;
+//   /* margin: 2px 10px; */
+//   height: 15px;
+//   float: left;
+//   font-size: 8px;
+//   // font-style: none;
+// }
+.detail-three-right {
+  width: 50px;
+  height: 30px;
+  float: right;
+}
+
+.detail-for {
+  margin-top: 10px;
+  width: 375px;
+  word-wrap: break-word;
+  word-break: break-all;
+  height: 370px;
+  overflow-y: auto;
+
+  max-height: 370px;
+  line-height: 30px;
+}
+.detail-for p {
+  margin: 0px 0px;
+  width: 375px;
+  font-size: 18px;
+}
+.detail-five {
+  margin-top: 20px;
+  width: 375px;
+  display: flex;
+  justify-content: space-around;
+}
+.detail-five-list {
+  display: flex;
+  justify-content: space-between;
+  width: 270px;
+}
+.detail-five-right i {
+  float: right;
+  width: 80px;
+}
+.detail-five-list-list img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+}
+// .detail-five-right-left {
+//   width: 1px;
+//   height: 1px;
+//   float: left;
+// }
+.detail-five-list-right h3,
+h4 {
+  word-break: break-all;
+  font-size: 18px;
+}
+.detail-five-list-right h3 {
+  color: #e8bcaf;
+}
+.detail-five-right-right {
+  float: right;
+}
+.detail-five-list-right span {
+  float: left;
+}
+.detail-five-list-right em {
+  font-style: normal;
+  height: 20px;
+  display: inline-block;
+  width: 50px;
+  border: 1px solid #eceef1;
+  border-radius: 10px;
+}
+.detail-five-list-right em span {
+  font-size: 12px;
+}
+.detail-five-right-right i {
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+}
+.detail-five-right-right span {
+  font-size: 18px;
+}
+.detail-five-list-right h3 {
+  margin: 0;
+}
+.detail-five-list-right h4 {
+  margin: 0;
+}
+.detail-five-list-right {
+  width: 200px;
+}
+.detail-five-list-list {
+  width: 50px;
+}
+.detail-six {
+  position: fixed;
+  width: 375px;
+  height: 40px;
+  bottom: 0;
+  left: 0;
+  float: left;
+  background-color: #ffffff;
+  border-top: 1px solid #adadac;
+}
+
+.detail-six-list {
+  float: left;
+  width: 180px;
+  height: 40px;
+}
+
+.detail-six-right {
+  display: flex;
+  justify-content: space-around;
+  width: 180px;
+  height: 40px;
+  float: left;
+  // line-height: 40px;
+  align-items: center;
+  // align-content: center;
+}
+.detail-six-right i {
+  display: inline-block;
+
+  font-size: 25px;
+  list-style: 40px;
+}
+</style>
