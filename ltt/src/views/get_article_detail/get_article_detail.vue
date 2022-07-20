@@ -30,9 +30,9 @@
         <div class="detail-five-list-right">
           <h3>{{ v.info.nickname }}</h3>
           <h4>{{ v.content }}</h4>
-          <div>
+          <div class="detail-five-list-right-right">
             <span> {{ timestampToTime(v.create_time) }}</span>
-            <em @click="HFPL(v)">{{ v.reply_num }}回复</em>
+            <em @click="HFPL(v, i)">{{ v.reply_num }}回复</em>
           </div>
         </div>
       </div>
@@ -69,35 +69,16 @@
         <van-icon name="share" />
       </div>
     </div>
-    <div class="detail-sevent">
-      <van-action-sheet v-model="show">
-        <div class="content">
-          <van-form @submit="onSubmit">
-            <van-field
-              v-model="HF"
-              name="回复"
-              placeholder="回复"
-              :rules="[{ required: true, message: '回复' }]"
-            />
-            <div style="margin: 16px">
-              <van-button round block type="info" native-type="submit"
-                >发送</van-button
-              >
-            </div>
-          </van-form>
-        </div>
-      </van-action-sheet>
-    </div>
   </div>
 </template>
-
 <script>
 export default {
   data() {
     return {
+      show: false,
       HF: "",
       message: "",
-      show: false,
+      SHOW: false,
       WZDZ: false,
       WZSC: false,
       value: "",
@@ -106,22 +87,28 @@ export default {
       pllb: [],
       sttus: 1,
       reply_comment_id: "",
+      erjipinglun: "",
     };
   },
   methods: {
-    erjipinglun() {
-      this.$router.push({
-        name: "erjipinglun",
-        params: {
-          reply_comment_id: this.reply_comment_id,
-          authorID: this.authorID,
-        },
-      });
+    showPopup() {
+      this.show = true;
     },
     HFPL(v, i) {
-      this.show = true;
-      console.log(v._id);
-      this.reply_comment_id = v._id;
+      this.SHOW = true;
+
+      this.axios
+        .post("/api/get_reply_list", {
+          article_id: this.authorID,
+          skip: 0,
+          limit: 3,
+          reply_comment_id: v._id,
+          user_id: localStorage.getItem("uid"),
+        })
+        .then((res) => {
+          console.log(res.data.data);
+          res.data.data = this.erjipinglun;
+        });
     },
     onSubmit(values) {
       this.axios
@@ -245,7 +232,7 @@ export default {
     },
   },
   mounted() {
-    this.authorID = this.$route.params.authorID;
+    this.authorID = this.$route.query.authorID;
     // console.log(this.authorID);
     this.axios
       .post("/api/get_article_detail", {
@@ -273,9 +260,35 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.van-overlay {
+  background-color: none;
+}
+.detail-ait-top span {
+  // display: inline-block;
+  float: left;
+}
+.detail-ait-top h3 {
+  font-size: 18px;
+  font-weight: bolder;
+  margin: 0;
+  text-align: center;
+}
+.detail-ait-tow h5 {
+  font-size: 12px;
+  margin: 0;
+}
+.detail-ait-tow p {
+  font-size: 16px;
+  margin: 0;
+  padding: 10px 0;
+}
+.detail-ait-tow span {
+  font-size: 14px;
+}
 .content {
   padding: 16px 16px 100px;
 }
+
 .detail {
   // width: 375px;
   border-color: #adadac;
@@ -416,7 +429,8 @@ h4 {
   border: 1px solid #eceef1;
   border-radius: 10px;
 }
-.detail-five-list-right em span {
+.detail-five-list-right span,
+em {
   font-size: 12px;
 }
 .detail-five-right-right i {
@@ -455,7 +469,9 @@ h4 {
   width: 180px;
   height: 40px;
 }
-
+.detail-five-list-right-right {
+  text-align: center;
+}
 .detail-six-right {
   display: flex;
   justify-content: space-around;

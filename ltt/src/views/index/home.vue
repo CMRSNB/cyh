@@ -46,8 +46,8 @@ export default {
     vixq(v) {
       // console.log(v);
       this.$router.push({
-        name: "getArticleDetail",
-        params: {
+        path: "/getArticleDetail",
+        query: {
           authorID: v._id,
         },
       });

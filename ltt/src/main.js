@@ -44,8 +44,10 @@ import {
   DropdownItem,
   ActionSheet,
   Badge,
+  Popup,
 } from "vant";
 
+Vue.use(Popup);
 Vue.use(Badge);
 Vue.use(ActionSheet);
 Vue.use(DropdownMenu);

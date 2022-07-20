@@ -73,7 +73,7 @@ export default {
         token: localStorage.getItem("tokenID"),
       })
       .then((res) => {
-        console.log(res.data.userInfo);
+        console.log(res.data);
         this.getuserInfo = res.data.userInfo;
         console.log(this.getuserInfo);
       });
@@ -120,6 +120,7 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 70px;
+  font-size: 18px;
 }
 .my-top-tow {
   height: 50px;
@@ -134,13 +135,16 @@ export default {
   text-align: center;
   display: inline-block;
   width: 187.5px;
+  font-size: 18px;
 }
 .my-top-tow span {
   text-align: center;
 
   display: inline-block;
   width: 187.5px;
+  font-size: 18px;
 }
+
 .my-top-tow-right {
   display: inline-block;
 
@@ -164,9 +168,24 @@ export default {
   float: right;
   width: 187.5px;
 }
-.my-tow-left i span {
+.my-tow-left h4 span {
   display: inline-block;
   width: 187.5px;
+  font-size: 18px;
+}
+.my-tow-left h4 {
+  font-size: 18px;
+  margin: 0;
+}
+.my-tow-left span i {
+  font-size: 18px;
+}
+.my-tow-right h4 {
+  font-size: 18px;
+  margin: 0;
+}
+.my-tow-right span i {
+  font-size: 18px;
 }
 .my-three {
   margin-top: 5px;

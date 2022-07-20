@@ -77,7 +77,7 @@ export default {
           cate_id: this.fbmk.id, //分类ID
           author: this.title,
           author_id: localStorage.getItem("uid"),
-          imageSrc: ["https://s2.seikim.com/i/2022/07/15/r2y1zz.jpeg"], //图片链接
+          imageSrc: ["https://i.postimg.cc/zf45MQzQ/20220719115836.jpg"], //图片链接
         })
         .then((result) => {
           console.log(result);
