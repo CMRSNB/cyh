@@ -32,7 +32,23 @@
           <h4>{{ v.content }}</h4>
           <div class="detail-five-list-right-right">
             <span> {{ timestampToTime(v.create_time) }}</span>
-            <em @click="HFPL(v, i)">{{ v.reply_num }}回复</em>
+            <em @click="ejpll(v, i)">{{ v.reply_num }}回复</em>
+          </div>
+          <div>
+            <van-popup
+              v-model="EJPL"
+              position="bottom"
+              closeable
+              :style="{ height: '100%' }"
+            >
+              <div class="ejpl">
+                <h3>{{ pllb[ejsy].info.nickname }}</h3>
+                <h4>{{ pllb[ejsy].content }}</h4>
+                <div class="ejpl-top">
+                  <span> {{ timestampToTime(pllb[ejsy].create_time) }}</span>
+                </div>
+              </div>
+            </van-popup>
           </div>
         </div>
       </div>
@@ -59,12 +75,12 @@
         <van-icon
           name="star"
           @click="wzsc"
-          :style="{ color: WZSC ? 'red' : '#ccc' }"
+          :style="{ color: is_fav ? 'red' : '#ccc' }"
         />
         <van-icon
           name="good-job"
           @click="wzdz"
-          :style="{ color: WZDZ ? 'red' : '#ccc' }"
+          :style="{ color: is_like ? 'red' : '#ccc' }"
         />
         <van-icon name="share" />
       </div>
@@ -81,12 +97,11 @@ export default {
 
   data() {
     return {
+      EJPL: false,
       show: false,
       HF: "",
       message: "",
       SHOW: false,
-      WZDZ: false,
-      WZSC: false,
       value: "",
       authorID: "",
       wzxq: {},
@@ -94,26 +109,20 @@ export default {
       sttus: 1,
       reply_comment_id: "",
       erjipinglun: "",
+      is_fav: false,
+      is_like: false,
+      ejsy: 0,
     };
   },
   methods: {
     showPopup() {
       this.show = true;
     },
-    HFPL(v, i) {
-      this.axios
-        .post("/api/get_reply_list", {
-          article_id: this.authorID,
-          skip: 0,
-          limit: 3,
-          reply_comment_id: v._id,
-          user_id: localStorage.getItem("uid"),
-        })
-        .then((res) => {
-          console.log(res.data.data);
-          res.data.data = this.erjipinglun;
-        });
-    },
+    ejpll(v, i) {
+      this.EJPL = !this.EJPL;
+      console.log(i);
+      this.ejsy = i;
+    }, //二级评论
     onSubmit(values) {
       this.axios
         .post("/api/add_comment", {
@@ -129,8 +138,8 @@ export default {
       // console.log("submit", values);
     },
     wzsc() {
-      this.WZSC = !this.WZSC;
-      if (this.WZSC == true) {
+      this.is_fav = !this.is_fav;
+      if (this.is_fav == true) {
         this.axios
           .post("/api/add_fav", {
             user_id: localStorage.getItem("uid"),
@@ -149,7 +158,7 @@ export default {
             console.log(res);
           });
       }
-    },
+    }, //文章收藏
     pldz(v, i) {
       console.log(i);
       v.is_like = !v.is_like;
@@ -177,10 +186,10 @@ export default {
             console.log(res);
           });
       }
-    },
+    }, //评论点赞
     wzdz() {
-      this.WZDZ = !this.WZDZ;
-      if (this.WZDZ == true) {
+      this.is_like = !this.is_like;
+      if (this.is_like == true) {
         this.axios
           .post("/api/like", {
             user_id: localStorage.getItem("uid"),
@@ -199,7 +208,7 @@ export default {
             console.log(res);
           });
       }
-    },
+    }, //文章点赞
     add() {
       this.axios
         .post("/api/add_comment", {
@@ -241,9 +250,12 @@ export default {
     this.axios
       .post("/api/get_article_detail", {
         article_id: this.authorID,
+        user_id: localStorage.getItem("uid"),
       })
       .then((res) => {
-        // console.log(res.data.data);
+        console.log(res.data.data);
+        this.is_fav = res.data.data.is_fav;
+        this.is_like = res.data.data.is_like;
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
         // console.log(this.wzxq);
@@ -257,14 +269,18 @@ export default {
         user_id: localStorage.getItem("uid"),
       })
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res);
         this.pllb = res.data.data;
+        console.log(this.pllb);
       });
   },
 };
 </script>
 <style lang="less" scoped>
 .van-overlay {
+}
+.van-overlay {
+  // background-color: transparent;
   background-color: none;
 }
 .detail-ait-top span {

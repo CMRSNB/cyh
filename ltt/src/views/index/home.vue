@@ -124,7 +124,7 @@ export default {
         }
         this.loading = false;
 
-        if (this.wzlb.length >= this.counts) {
+        if (this.wzlb.length >= 20) {
           this.finished = true;
         }
       }, 1000);
@@ -157,7 +157,7 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res.data.data);
+          // console.log(res.data.data);
         });
     },
     home(index) {
@@ -170,13 +170,13 @@ export default {
           limit: "10",
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           // console.log(res.data.data[index].author_id);
           this.wzlb = res.data.data;
           this.count = 0;
           this.counts = res.data.count - 0;
           Math.floor(this.counts);
-          console.log(Math.ceil(this.counts));
+          // console.log(Math.ceil(this.counts));
           // console.log(this.wzlb);
         });
     },
@@ -196,9 +196,9 @@ export default {
         })
         .then((res) => {
           this.wzlb = res.data.data;
-          console.log(res.data);
+          // console.log(res.data);
           this.counts = Math.floor(res.data.count);
-          console.log(this.wzlb);
+          // console.log(this.wzlb);
         });
     });
   },
