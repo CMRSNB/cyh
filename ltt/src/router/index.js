@@ -133,6 +133,15 @@ const routes = [
       needLogin: true, //需要加校检判断的路由
     },
   },
+  {
+    path: "/go",
+    name: "go",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/go/go.vue"),
+    meta: {
+      needLogin: true, //需要加校检判断的路由
+    },
+  },
 ];
 
 const router = new VueRouter({

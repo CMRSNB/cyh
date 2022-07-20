@@ -18,42 +18,151 @@
         </van-tab>
       </van-tabs>
     </div>
-    <div class="home-three">
-      <div
-        v-for="(v, i) in wzlb"
-        :key="i"
-        class="home-three-min"
-        @click="vixq(v)"
+    <van-pull-refresh
+      v-model="isLoading"
+      @refresh="onRefresh()"
+      success-text="刷新成功"
+    >
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
       >
-        <p>{{ v.author }}:</p>
-        <h3>{{ v.title }}</h3>
-        <img :src="v.imageSrc[0]" alt="" />
-      </div>
-    </div>
+        <div
+          v-for="(v, i) in wzlb"
+          :key="i"
+          class="home-three"
+          @click="vixq(v)"
+        >
+          <div class="home-three-top">
+            <h3>{{ v.title }}</h3>
+          </div>
+          <div class="home-three-tow">
+            <span>作者：{{ v.author }}</span>
+          </div>
+          <div
+            :class="{
+              img2: v.poster_type == 2,
+              img3: v.poster_type == 3,
+            }"
+          >
+            <img
+              alt=""
+              v-for="(value, index) in v.imageSrc"
+              :src="value"
+              :key="index"
+            />
+          </div>
+          <div class="home-three-for">
+            <span> 日期：{{ timestampToTime(v.time) }} </span>
+          </div>
+        </div>
+      </van-list>
+    </van-pull-refresh>
   </div>
 </template>
 <script>
+import { Toast } from "vant";
 export default {
   data() {
     return {
+      loading: false,
+      finished: false,
+      count: 0,
+      isLoading: false,
       value: "",
       hqfl: [], //获取分类
       wzlb: [], //第一个文章列表
       hqflID: [], //获取id
+      index: 0,
+      count: 0,
+      counts: 0,
     };
   },
   methods: {
+    // 时间戳：1637244864707
+    /* 时间戳转换为时间 */
+    timestampToTime(timestamp) {
+      timestamp = timestamp ? timestamp : null;
+      let date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + "-";
+      let M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      let D =
+        (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
+      let h =
+        (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+      let m =
+        (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) +
+        ":";
+      let s =
+        date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+      return Y + M + D;
+    },
+    onLoad() {
+      setTimeout(() => {
+        this.count += 10;
+        if (this.refreshing) {
+          this.wzlb = [];
+          this.refreshing = false;
+        }
+
+        for (let i = 0; i < 10; i++) {
+          this.axios
+            .post("/api/get_article_list", {
+              cate_id: this.hqflID[this.index]._id,
+              skip: this.count,
+              limit: 10,
+            })
+            .then((res) => {
+              this.wzlb.push(res.data.data[i]);
+            });
+          // this.wzlb.push(this.list.length + 1);
+        }
+        this.loading = false;
+
+        if (this.wzlb.length >= this.counts) {
+          this.finished = true;
+        }
+      }, 1000);
+    }, //底部
+    onRefresh() {
+      setTimeout(() => {
+        this.isLoading = false;
+        this.count++;
+        this.axios
+          .post("/api/get_article_list", {
+            cate_id: this.hqflID[this.index]._id,
+            skip: "0",
+            limit: "10",
+          })
+          .then((res) => {
+            // console.log(res.data.data);
+            // console.log(res.data.data[index].author_id);
+            this.wzlb = res.data.data;
+          });
+      }, 1000);
+    }, //上面
+
     vixq(v) {
       // console.log(v);
-      this.$router.push({
-        path: "/getArticleDetail",
-        query: {
-          authorID: v._id,
-        },
-      });
+      this.$router
+        .push({
+          path: "/getArticleDetail",
+          query: {
+            authorID: v._id,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.data);
+        });
     },
     home(index) {
-      // console.log(index);
+      this.index = index;
+
       this.axios
         .post("/api/get_article_list", {
           cate_id: this.hqflID[index]._id,
@@ -61,13 +170,17 @@ export default {
           limit: "10",
         })
         .then((res) => {
-          // console.log(res.data.data);
+          console.log(res.data);
           // console.log(res.data.data[index].author_id);
           this.wzlb = res.data.data;
+          this.count = 0;
+          this.counts = res.data.count - 0;
+          Math.floor(this.counts);
+          console.log(Math.ceil(this.counts));
           // console.log(this.wzlb);
         });
     },
-  },
+  }, //接受索引点击哪一个得到哪一个的文章列表
   mounted() {
     this.axios.post("/api/get_cate_list").then((res) => {
       // console.log(res.data.data);
@@ -83,52 +196,62 @@ export default {
         })
         .then((res) => {
           this.wzlb = res.data.data;
+          console.log(res.data);
+          this.counts = Math.floor(res.data.count);
+          console.log(this.wzlb);
         });
     });
-  },
-  destroyed() {
-    console.log(111);
   },
 };
 </script>
 <style lang="less" scoped>
-.home-three {
-  width: 375px;
+.img3 {
   display: flex;
   justify-content: space-around;
-  flex-flow: wrap;
+}
+.img3 img {
+  width: 30%;
+  height: 100px;
 }
 
-.home-three-min {
-  width: 170px;
-  height: 100px;
-  margin-bottom: 30px;
+.img2 {
+  width: 375px;
+  height: 250px;
+  text-align: center;
 }
-.home-three-min img {
-  width: 165px;
-  height: 80px;
+.img2 img {
+  width: 350px;
+  height: 250px;
+  // margin: 0 auto;
+  // text-align: center;
 }
-.home-three-min p {
-  display: inline-block;
-  font-size: 12px;
-  color: black;
-  font-weight: bold;
-  width: 170px;
+
+.home-three-three img {
+  // width: 375px;
+  // height: 200px;
+}
+.home-three {
+  width: 375px;
+  margin-bottom: 20px;
+}
+.home-three h3 {
   margin: 0;
+  width: 200px;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-style: normal;
+  padding-left: 10px;
 }
-.home-three-min h3 {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 170px;
-  height: 20px;
+
+.home-three-tow span {
   font-size: 12px;
-  color: black;
-  margin: 0;
-  // display: block;
-  overflow: hidden;
+  padding-left: 10px;
+}
+
+.home-three-for span {
+  font-size: 12px;
+  padding-left: 10px;
 }
 </style>

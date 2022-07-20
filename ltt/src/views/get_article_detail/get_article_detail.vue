@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <div class="detail-top"><van-nav-bar title="文章详情" /></div>
+    <div class="detail-top"><go></go><van-nav-bar title="文章详情" /></div>
 
     <div class="detail-tow">
       <h4>{{ wzxq.title }}</h4>
@@ -71,8 +71,14 @@
     </div>
   </div>
 </template>
+
 <script>
+import go from "../go/go";
 export default {
+  components: {
+    go: go,
+  },
+
   data() {
     return {
       show: false,
@@ -95,8 +101,6 @@ export default {
       this.show = true;
     },
     HFPL(v, i) {
-      this.SHOW = true;
-
       this.axios
         .post("/api/get_reply_list", {
           article_id: this.authorID,
@@ -349,6 +353,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 18px;
 }
 
 // .detail-three-list h3 {

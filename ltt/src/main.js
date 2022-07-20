@@ -45,8 +45,14 @@ import {
   ActionSheet,
   Badge,
   Popup,
+  PullRefresh,
+  List,
+  Overlay,
 } from "vant";
 
+Vue.use(Overlay);
+Vue.use(List);
+Vue.use(PullRefresh);
 Vue.use(Popup);
 Vue.use(Badge);
 Vue.use(ActionSheet);

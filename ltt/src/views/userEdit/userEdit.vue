@@ -1,8 +1,6 @@
 <template>
   <div class="userEdit">
-    <div>
-      <van-nav-bar title="个人信息" left-arrow />
-    </div>
+    <div><go></go> <van-nav-bar title="个人信息" /></div>
     <div class="userEdit-tow">
       <van-cell title="头像" is-link />
       <van-cell-group>
@@ -34,6 +32,7 @@
   </div>
 </template>
 <script>
+import go from "../go/go.vue";
 import { Toast } from "vant";
 import { Dialog } from "vant";
 export default {
@@ -50,7 +49,9 @@ export default {
       maxDate: new Date(2093, 0, 31),
     };
   },
-
+  components: {
+    go: go,
+  },
   methods: {
     formatDate(date) {
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
