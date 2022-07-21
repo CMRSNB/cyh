@@ -34,23 +34,32 @@
             <span> {{ timestampToTime(v.create_time) }}</span>
             <em @click="ejpll(v, i)">{{ v.reply_num }}回复</em>
           </div>
-          <div>
-            <van-popup
-              v-model="EJPL"
-              position="bottom"
-              closeable
-              :style="{ height: '100%' }"
-            >
-              <div class="ejpl">
-                <h3>{{ pllb[ejsy].info.nickname }}</h3>
-                <h4>{{ pllb[ejsy].content }}</h4>
-                <div class="ejpl-top">
+          <van-popup
+            v-model="EJPL"
+            position="bottom"
+            closeable
+            :style="{ height: '100%' }"
+          >
+            <h3>回复</h3>
+            <div class="ejpl">
+              <div class="ejpl-left">
+                <div>
+                  <img :src="pllb[ejsy].info.avatar" alt="" />
+                </div>
+                <div class="ejpl-three">
+                  <h3>{{ pllb[ejsy].info.nickname }}</h3>
+                  <h4>{{ pllb[ejsy].content }}</h4>
                   <span> {{ timestampToTime(pllb[ejsy].create_time) }}</span>
                 </div>
               </div>
-            </van-popup>
-          </div>
+              <div class="ejpl-right">
+                <span>0<van-icon name="good-job" /></span>
+              </div>
+            </div>
+          </van-popup>
         </div>
+
+        <!-- 点击回复出现 -->
       </div>
       <div class="detail-five-right">
         <div class="detail-five-right-left"></div>
@@ -120,7 +129,7 @@ export default {
     },
     ejpll(v, i) {
       this.EJPL = !this.EJPL;
-      console.log(i);
+      // console.log(i);
       this.ejsy = i;
     }, //二级评论
     onSubmit(values) {
@@ -277,7 +286,21 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.van-overlay {
+.ejpl {
+  display: inline-block;
+  width: 375px;
+  justify-content: space-around;
+}
+.ejpl-left {
+  width: 200px;
+}
+.ejpl-left img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.ejpl-right {
+  width: 100px;
 }
 .van-overlay {
   // background-color: transparent;

@@ -124,7 +124,7 @@ export default {
         }
         this.loading = false;
 
-        if (this.wzlb.length >= 20) {
+        if (this.wzlb.length >= this.counts * 10) {
           this.finished = true;
         }
       }, 1000);
@@ -197,8 +197,12 @@ export default {
         .then((res) => {
           this.wzlb = res.data.data;
           // console.log(res.data);
-          this.counts = Math.floor(res.data.count);
+          // console.log(res.data.count);
+          this.counts = parseInt(res.data.count / 10);
           // console.log(this.wzlb);
+          // console.log(res.data.count / 10);
+          // console.log(parseInt(res.data.count / 10));
+          // console.log(this.counts);
         });
     });
   },
@@ -226,10 +230,6 @@ export default {
   // text-align: center;
 }
 
-.home-three-three img {
-  // width: 375px;
-  // height: 200px;
-}
 .home-three {
   width: 375px;
   margin-bottom: 20px;

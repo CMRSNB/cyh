@@ -29,8 +29,13 @@
           placeholder="请输入短信验证码"
         >
           <template #button>
-            <van-button size="small" type="primary" @click="fsyzm"
-              >发送验证码</van-button
+            <van-button
+              size="small"
+              type="primary"
+              @click="fsyzm"
+              native-type="button"
+              :disabled="YZMjy"
+              >{{ YZM }}</van-button
             >
           </template>
         </van-field>
@@ -51,6 +56,8 @@ export default {
       username: "",
       vercode: "",
       password: "",
+      YZM: "发送验证码",
+      YZMjy: false,
     };
   },
   methods: {
@@ -77,7 +84,15 @@ export default {
         });
     },
     fsyzm() {
-      console.log(111);
+      // console.log(111);
+      this.YZMjy = true;
+
+      setInterval(function () {
+        if (this.YZM == 0) {
+          this.YZM = "再次发送";
+          this.YZM = 60;
+        }
+      }, 1000);
       this.axios
         .post("/user/sendSms", { mobile: this.username, type: "register" })
         .then((res) => {
