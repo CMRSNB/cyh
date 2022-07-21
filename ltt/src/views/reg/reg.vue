@@ -1,9 +1,6 @@
 <template>
   <div class="heder">
-    <div class="heder-top">
-      <router-link to="/reg">注册/</router-link>
-      <router-link to="/login">登录</router-link>
-    </div>
+    <dlzctb></dlzctb>
     <div>
       <van-form @submit="onSubmit">
         <van-field
@@ -40,9 +37,10 @@
           </template>
         </van-field>
         <div style="margin: 16px">
-          <van-button round block type="info" native-type="submit"
-            >注册</van-button
-          >
+          <van-button round block type="info" native-type="submit">
+            {{ this.ZC }}
+            <!-- <van-loading type="spinner"  /> -->
+          </van-button>
         </div>
       </van-form>
     </div>
@@ -50,7 +48,13 @@
 </template>
 <script>
 import { Toast } from "vant";
+import dlzctb from "../dlzctb/dlzctb";
+
 export default {
+  components: {
+    dlzctb,
+  },
+
   data() {
     return {
       username: "",
@@ -58,6 +62,7 @@ export default {
       password: "",
       YZM: "发送验证码",
       YZMjy: false,
+      ZC: "注册",
     };
   },
   methods: {
@@ -85,24 +90,38 @@ export default {
     },
     fsyzm() {
       // console.log(111);
-      this.YZMjy = true;
-
-      setInterval(function () {
-        if (this.YZM == 0) {
-          this.YZM = "再次发送";
-          this.YZM = 60;
-        }
-      }, 1000);
+      // this.ZC = <van-loading type="spinner" />;
       this.axios
         .post("/user/sendSms", { mobile: this.username, type: "register" })
         .then((res) => {
+          Toast(res.data.msg);
+          // this.$toast(res.data.msg);
+          console.log(res.data.msg);
+          this.YZMjy = true;
+          this.YZM = 60;
+          let dsq = setInterval(() => {
+            if (this.YZM == 0) {
+              this.YZM = "再次发送";
+              clearInterval(dsq);
+              this.YZMjy = false;
+            } else {
+              this.YZM--;
+            }
+          }, 1000);
           console.log(res);
+        })
+        .catch((err) => {
+          // console.log(err);
+          this.$toast(err.msg);
         });
-    },
+    }, //注册
   },
 };
 </script>
 <style lang="less">
+.heder-top .logins {
+  color: @color;
+}
 .heder-top {
   width: 375px;
   height: 50px;

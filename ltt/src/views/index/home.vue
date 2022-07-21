@@ -29,33 +29,42 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <div
-          v-for="(v, i) in wzlb"
-          :key="i"
-          class="home-three"
-          @click="vixq(v)"
-        >
-          <div class="home-three-top">
-            <h3>{{ v.title }}</h3>
-          </div>
-          <div class="home-three-tow">
-            <span>作者：{{ v.author }}</span>
-          </div>
+        <div class="home-nr">
           <div
-            :class="{
-              img2: v.poster_type == 2,
-              img3: v.poster_type == 3,
-            }"
+            v-for="(v, i) in wzlb"
+            :key="i"
+            class="home-three"
+            @click="vixq(v)"
           >
-            <img
-              alt=""
-              v-for="(value, index) in v.imageSrc"
-              :src="value"
-              :key="index"
-            />
-          </div>
-          <div class="home-three-for">
-            <span> 日期：{{ timestampToTime(v.time) }} </span>
+            <div class="home-three-top">
+              <h3>{{ v.title }}</h3>
+            </div>
+            <div class="home-three-tow">
+              <span>作者：{{ v.author }}</span>
+            </div>
+            <div
+              :class="{
+                img2: v.poster_type == 2,
+                img3: v.poster_type == 3,
+              }"
+            >
+              <van-image
+                v-for="(value, index) in v.imageSrc"
+                :src="value"
+                :key="index"
+              >
+                <template v-slot:error>加载失败</template>
+              </van-image>
+              <!-- <img
+                alt=""
+                v-for="(value, index) in v.imageSrc"
+                :src="value"
+                :key="index"
+              /> -->
+            </div>
+            <div class="home-three-for">
+              <span> 日期：{{ timestampToTime(v.time) }} </span>
+            </div>
           </div>
         </div>
       </van-list>
@@ -209,11 +218,20 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.home-nr {
+  width: 375px;
+  margin-bottom: 50px;
+  margin-top: 20px;
+}
+.van-image__img {
+  width: none;
+  height: none;
+}
 .img3 {
   display: flex;
   justify-content: space-around;
 }
-.img3 img {
+.img3 .van-image {
   width: 30%;
   height: 100px;
 }
@@ -221,13 +239,14 @@ export default {
 .img2 {
   width: 375px;
   height: 250px;
-  text-align: center;
+  // text-align: center;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
 }
-.img2 img {
+.img2 .van-image {
   width: 350px;
   height: 250px;
-  // margin: 0 auto;
-  // text-align: center;
 }
 
 .home-three {

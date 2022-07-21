@@ -1,6 +1,7 @@
 <template>
   <div class="heder">
     <div class="heder-top">
+      <go></go>
       <van-nav-bar title="忘记密码" />
     </div>
     <div>
@@ -42,7 +43,13 @@
 </template>
 <script>
 import { Toast } from "vant";
+import go from "../go/go";
+
 export default {
+  components: {
+    go,
+  },
+
   data() {
     return {
       username: "",

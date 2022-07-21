@@ -17,11 +17,13 @@
         >
       </div>
     </div>
+    <!-- 作者信息 -->
     <div class="detail-for">
       <p>
         {{ wzxq.content }}
       </p>
     </div>
+    <!-- 文章信息 -->
     <div class="detail-five" v-for="(v, i) in pllb" :key="i">
       <div class="detail-five-list">
         <div class="detail-five-list-list">
@@ -40,7 +42,8 @@
             closeable
             :style="{ height: '100%' }"
           >
-            <h3>回复</h3>
+            <div class="ejpl-top"><h3>回复</h3></div>
+
             <div class="ejpl">
               <div class="ejpl-left">
                 <div>
@@ -53,12 +56,49 @@
                 </div>
               </div>
               <div class="ejpl-right">
-                <span>0<van-icon name="good-job" /></span>
+                <van-icon
+                  name="good-job"
+                  :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
+                  @click="pldz(v, i)"
+                />
+                <span>{{ pllb[ejsy].like_count }}</span>
+                <!-- 点赞 -->
               </div>
+            </div>
+            <!-- 二级评论进去第一项 -->
+            <div class="ejplpllb">
+              <div class="ejpl" v-for="(vv, ii) in ejplllb" :key="ii">
+                <div class="ejpl-left">
+                  <div>
+                    <img :src="vv.info.avatar" alt="" />
+                  </div>
+                  <div class="ejpl-three">
+                    <h3>{{ vv.info.nickname }}</h3>
+                    <h4>{{ vv.content }}</h4>
+                    <span>{{ timestampToTime(vv.create_time) }}</span>
+                  </div>
+                </div>
+                <div class="ejpl-right">
+                  <van-icon name="good-job" />
+                  <!-- <van-icon
+                    name="good-job"
+                    :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
+                  /> -->
+                  <span>{{ vv.like_count }}</span>
+                  <!-- 点赞 -->
+                </div>
+              </div>
+              <!-- Field 是基于 Cell 实现的，可以使用 CellGroup 作为容器来提供外边框。 -->
+              <van-cell-group>
+                <van-field
+                  v-model="ejplhf"
+                  label="文本"
+                  placeholder="请输入用户名"
+                />
+              </van-cell-group>
             </div>
           </van-popup>
         </div>
-
         <!-- 点击回复出现 -->
       </div>
       <div class="detail-five-right">
@@ -73,6 +113,7 @@
         </div>
       </div>
     </div>
+    <!-- 评论详情 -->
     <div class="detail-six">
       <div class="detail-six-list">
         <van-cell-group>
@@ -80,7 +121,7 @@
         </van-cell-group>
       </div>
       <div class="detail-six-right">
-        <van-icon name="comment" @click="add" />
+        <van-icon name="comment" @click="fbpl" />
         <van-icon
           name="star"
           @click="wzsc"
@@ -106,6 +147,7 @@ export default {
 
   data() {
     return {
+      ejplhf: "",
       EJPL: false,
       show: false,
       HF: "",
@@ -120,7 +162,8 @@ export default {
       erjipinglun: "",
       is_fav: false,
       is_like: false,
-      ejsy: 0,
+      ejsy: 1,
+      ejplllb: [],
     };
   },
   methods: {
@@ -131,6 +174,19 @@ export default {
       this.EJPL = !this.EJPL;
       // console.log(i);
       this.ejsy = i;
+      // console.log(this.pllb[i]._id);
+      this.axios
+        .post("/api/get_reply_list", {
+          article_id: this.authorID,
+          skip: 0,
+          limit: 5,
+          reply_comment_id: this.pllb[i]._id,
+          user_id: localStorage.getItem("uid"),
+        })
+        .then((res) => {
+          console.log(res.data.data);
+          this.ejplllb = res.data.data;
+        });
     }, //二级评论
     onSubmit(values) {
       this.axios
@@ -156,6 +212,7 @@ export default {
           })
           .then((res) => {
             console.log(res);
+            this.$toast(res.data.msg);
           });
       } else {
         this.axios
@@ -164,6 +221,8 @@ export default {
             article_id: this.authorID,
           })
           .then((res) => {
+            this.$toast(res.data.msg);
+
             console.log(res);
           });
       }
@@ -205,6 +264,8 @@ export default {
             article_id: this.authorID,
           })
           .then((res) => {
+            this.$toast(res.data.msg);
+
             console.log(res);
           });
       } else {
@@ -214,11 +275,13 @@ export default {
             article_id: this.authorID,
           })
           .then((res) => {
+            this.$toast(res.data.msg);
+
             console.log(res);
           });
       }
     }, //文章点赞
-    add() {
+    fbpl() {
       this.axios
         .post("/api/add_comment", {
           user_id: localStorage.getItem("uid"),
@@ -228,9 +291,22 @@ export default {
           content: this.value,
         })
         .then((res) => {
-          // console.log(res);
+          this.$toast(res.data.msg);
+          console.log(res.data.msg);
+          this.axios
+            .post("/api/get_comment_list", {
+              article_id: this.authorID,
+              skip: 0,
+              limit: 10,
+              user_id: localStorage.getItem("uid"),
+            })
+            .then((res) => {
+              // console.log(res);
+              this.pllb = res.data.data;
+              // console.log(this.pllb);
+            });
         });
-    },
+    }, //发布评论
     // 时间戳：1637244864707
     /* 时间戳转换为时间 */
     timestampToTime(timestamp) {
@@ -262,11 +338,12 @@ export default {
         user_id: localStorage.getItem("uid"),
       })
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         this.is_fav = res.data.data.is_fav;
         this.is_like = res.data.data.is_like;
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
+        // console.log(res.data);
         // console.log(this.wzxq);
       });
 
@@ -278,34 +355,66 @@ export default {
         user_id: localStorage.getItem("uid"),
       })
       .then((res) => {
-        // console.log(res);
         this.pllb = res.data.data;
-        console.log(this.pllb);
+        // console.log(res.data.data);
+        // console.log(this.pllb);
       });
   },
 };
 </script>
 <style lang="less" scoped>
 .ejpl {
-  display: inline-block;
+  display: flex;
   width: 375px;
   justify-content: space-around;
 }
 .ejpl-left {
-  width: 200px;
+  width: 260px;
+
+  display: flex;
+  justify-content: space-between;
 }
 .ejpl-left img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
 }
+.ejpl-right i {
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+}
 .ejpl-right {
-  width: 100px;
+  width: 40px;
+  height: 98px;
 }
-.van-overlay {
-  // background-color: transparent;
-  background-color: none;
+
+.ejpl-three {
+  width: 200px;
 }
+
+.ejpl-three h3 {
+  font-size: 18px;
+  font-style: normal;
+  margin: 0;
+}
+.ejpl-three h4 {
+  font-size: 18px;
+  margin: 0;
+}
+.detail-five-list-right .ejpl-right .ejpl-right span {
+  font-size: 18px;
+}
+
+.ejpl-top {
+  width: 375px;
+  height: 50px;
+}
+.ejpl-top h3 {
+  text-align: center;
+  line-height: 50px;
+}
+
 .detail-ait-top span {
   // display: inline-block;
   float: left;
@@ -415,22 +524,25 @@ export default {
   width: 375px;
   word-wrap: break-word;
   word-break: break-all;
-  height: 370px;
+  min-height: 100px;
   overflow-y: auto;
-
   max-height: 370px;
   line-height: 30px;
 }
 .detail-for p {
+  text-indent: 2em;
   margin: 0px 0px;
   width: 375px;
   font-size: 18px;
+  // box-sizing: border-box;
+  // padding: 0 10px;
 }
 .detail-five {
   margin-top: 20px;
   width: 375px;
   display: flex;
   justify-content: space-around;
+  margin-bottom: 50px;
 }
 .detail-five-list {
   display: flex;

@@ -1,9 +1,6 @@
 <template>
   <div class="heder">
-    <div class="heder-top">
-      <router-link to="/reg" active-class=".logins">注册/</router-link>
-      <router-link to="/login" active-class=".logins">登录</router-link>
-    </div>
+    <dlzctb></dlzctb>
     <div>
       <van-form @submit="onSubmit">
         <van-field
@@ -36,7 +33,12 @@
 </template>
 <script>
 import { Toast } from "vant";
+import dlzctb from "../dlzctb/dlzctb";
+
 export default {
+  components: {
+    dlzctb,
+  },
   data() {
     return {
       username: "",
@@ -85,10 +87,13 @@ export default {
 .heder-top a {
   color: rgb(255, 255, 255);
 }
-.heder-top a .logins {
+.heder-top .logins {
   color: @color;
 }
 .login-three {
   margin: 10px 10px;
+}
+.login-three a {
+  font-size: 14px;
 }
 </style>

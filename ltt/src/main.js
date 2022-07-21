@@ -48,8 +48,12 @@ import {
   PullRefresh,
   List,
   Overlay,
+  Loading,
+  Image as VanImage,
 } from "vant";
 
+Vue.use(VanImage);
+Vue.use(Loading);
 Vue.use(Overlay);
 Vue.use(List);
 Vue.use(PullRefresh);
