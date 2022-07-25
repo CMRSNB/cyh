@@ -20,6 +20,18 @@ router.beforeEach(function (to, from, next) {
   }
 });
 Vue.config.productionTip = false;
+// // 请求拦截
+// axios.interceptors.request.use((res) => {
+//   console.log(res);
+//   return res;
+// });
+
+// 相应拦截
+// axios.interceptors.response.use((res) => {
+//   console.log(res);
+//   return res.data;
+// });
+
 axios.defaults.baseURL =
   "https://d33a5037-6c63-4e92-8bb1-30018ab701ea.bspapp.com/http";
 import {

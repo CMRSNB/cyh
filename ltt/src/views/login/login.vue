@@ -66,9 +66,20 @@ export default {
           console.log(result.data);
           if (result.data.code == "0") {
             this.$router.push("/");
-            localStorage.username = result.data.username;
-            localStorage.tokenID = result.data.token;
+            let { username, token, uid } = result.data;
+            localStorage.username = username;
+            localStorage.tokenID = token;
             localStorage.uid = result.data.uid;
+            this.$store.commit("change", { key: "uid", value: uid });
+            this.$store.commit("change", {
+              key: "username",
+              value: username,
+            });
+            this.$store.commit("change", { key: "token", value: token });
+            this.$store.commit("change", {
+              key: "isLogin",
+              value: true,
+            });
           }
         });
     },

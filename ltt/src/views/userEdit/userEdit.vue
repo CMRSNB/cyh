@@ -65,14 +65,16 @@ export default {
     qd() {
       this.axios
         .post("/user/editUserInfo", {
-          avatar: "https://obohe.com/i/2022/07/18/j5ncvq.jpg",
+          avatar:
+            "https://game.gtimg.cn/images/lol/act/img/champion/Malphite.png",
           nickname: this.username,
           sex: this.sex,
           birthday: this.date,
           uid: localStorage.getItem("uid"),
         })
         .then((res) => {
-          console.log(res);
+          console.log(res.data);
+          this.$toast(res.data.msg);
         });
     },
     nc() {

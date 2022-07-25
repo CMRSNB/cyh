@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <router-view />
-    <van-tabbar v-model="active" class="buttom">
+  <div class="buttom">
+    <van-tabbar v-model="active">
       <van-tabbar-item to="/" icon="home-o">首页</van-tabbar-item>
       <van-tabbar-item to="/publish" icon="search">发布</van-tabbar-item>
       <van-tabbar-item to="my" icon="friends-o">我的</van-tabbar-item>
@@ -20,5 +19,8 @@ export default {
 <style lang="less" scoped>
 .buttom {
   height: 50px;
+  display: flex;
+  bottom: 0;
+  left: 0;
 }
 </style>

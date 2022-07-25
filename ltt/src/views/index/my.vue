@@ -3,6 +3,7 @@
     <div class="my-top">
       <div class="my-top-top">
         <div class="my-top-top-lest">
+          <!-- {{ $store.state.isLogin }} -->
           <img :src="getuserInfo.avatar" alt="" />
           <span> {{ getuserInfo.nickname }}</span>
         </div>
@@ -43,10 +44,15 @@
         >退出登录</van-button
       >
     </div>
+    <buttom></buttom>
   </div>
 </template>
 <script>
+import buttom from "../index/buttom.vue";
 export default {
+  components: {
+    buttom,
+  },
   data() {
     return {
       getuserInfo: [], //用户信息

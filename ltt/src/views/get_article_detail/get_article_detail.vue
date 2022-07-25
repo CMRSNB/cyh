@@ -9,7 +9,7 @@
       <div class="detail-three-list">
         <img :src="wzxq.avatar" alt="" />
         <span>{{ wzxq.nickname }}</span>
-        <h4>2021-12-12</h4>
+        <h4>{{ timestampToTime(wzxq.time) }}</h4>
       </div>
       <div class="detail-three-right">
         <van-button type="primary" size="mini"
@@ -24,6 +24,7 @@
       </p>
     </div>
     <!-- 文章信息 -->
+
     <div class="detail-five" v-for="(v, i) in pllb" :key="i">
       <div class="detail-five-list">
         <div class="detail-five-list-list">
@@ -31,6 +32,7 @@
         </div>
         <div class="detail-five-list-right">
           <h3>{{ v.info.nickname }}</h3>
+
           <h4>{{ v.content }}</h4>
           <div class="detail-five-list-right-right">
             <span> {{ timestampToTime(v.create_time) }}</span>
@@ -51,6 +53,7 @@
                 </div>
                 <div class="ejpl-three">
                   <h3>{{ pllb[ejsy].info.nickname }}</h3>
+
                   <h4>{{ pllb[ejsy].content }}</h4>
                   <span> {{ timestampToTime(pllb[ejsy].create_time) }}</span>
                 </div>
@@ -67,14 +70,14 @@
             </div>
             <!-- 二级评论进去第一项 -->
             <div class="ejplpllb">
-              <div class="ejpl" v-for="(vv, ii) in ejplllb" :key="ii">
+              <div class="ejpl" v-for="(value, index) in ejplllb" :key="index">
                 <div class="ejpl-left">
                   <div>
-                    <img :src="vv.info.avatar" alt="" />
+                    <img :src="value.info.avatar" alt="" />
                   </div>
                   <div class="ejpl-three">
-                    <h3>{{ vv.info.nickname }}</h3>
-                    <h4>{{ vv.content }}</h4>
+                    <h3>{{ value.info.nickname }}</h3>
+                    <h4>{{ value.content }}</h4>
                     <span>{{ timestampToTime(vv.create_time) }}</span>
                   </div>
                 </div>
@@ -114,6 +117,7 @@
       </div>
     </div>
     <!-- 评论详情 -->
+
     <div class="detail-six">
       <div class="detail-six-list">
         <van-cell-group>
@@ -198,7 +202,7 @@ export default {
           content: this.HF,
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         });
       // console.log("submit", values);
     },
@@ -223,15 +227,15 @@ export default {
           .then((res) => {
             this.$toast(res.data.msg);
 
-            console.log(res);
+            // console.log(res);
           });
       }
     }, //文章收藏
     pldz(v, i) {
-      console.log(i);
+      // console.log(i);
       v.is_like = !v.is_like;
-      console.log(v.is_like);
-      console.log(v);
+      // console.log(v.is_like);
+      // console.log(v);
       if (v.is_like == true) {
         v.like_count++;
         this.axios
@@ -240,7 +244,7 @@ export default {
             comment_id: v._id,
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           });
       } else {
         v.like_count--;
@@ -251,7 +255,7 @@ export default {
             comment_id: v._id,
           })
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           });
       }
     }, //评论点赞
@@ -266,7 +270,7 @@ export default {
           .then((res) => {
             this.$toast(res.data.msg);
 
-            console.log(res);
+            // console.log(res);
           });
       } else {
         this.axios
@@ -277,7 +281,7 @@ export default {
           .then((res) => {
             this.$toast(res.data.msg);
 
-            console.log(res);
+            // console.log(res);
           });
       }
     }, //文章点赞
@@ -292,7 +296,7 @@ export default {
         })
         .then((res) => {
           this.$toast(res.data.msg);
-          console.log(res.data.msg);
+          // console.log(res.data.msg);
           this.axios
             .post("/api/get_comment_list", {
               article_id: this.authorID,
@@ -344,7 +348,7 @@ export default {
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
         // console.log(res.data);
-        // console.log(this.wzxq);
+        console.log(this.wzxq);
       });
 
     this.axios
@@ -357,7 +361,7 @@ export default {
       .then((res) => {
         this.pllb = res.data.data;
         // console.log(res.data.data);
-        // console.log(this.pllb);
+        console.log(this.pllb);
       });
   },
 };

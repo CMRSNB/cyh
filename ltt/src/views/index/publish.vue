@@ -26,12 +26,20 @@
     <div class="publish-six">
       <van-button type="primary" size="large" @click="fb()">提交</van-button>
     </div>
+    <buttom></buttom>
   </div>
 </template>
 
 <script>
-import { Toast } from "vant";
+import ny7 from "../7ny/7ny";
+import { Form, Toast } from "vant";
+import buttom from "../index/buttom.vue";
 export default {
+  components: {
+    buttom,
+    ny7,
+  },
+
   data() {
     return {
       show: false,
@@ -96,6 +104,7 @@ export default {
     this.tokenID = localStorage.getItem("tokenID");
     console.log(this.tokenID);
   },
+  mounted() {},
 };
 </script>
 <style lang="less">

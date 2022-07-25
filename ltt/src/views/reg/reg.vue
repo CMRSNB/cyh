@@ -44,6 +44,8 @@
         </div>
       </van-form>
     </div>
+    <h1>{{ $store.state.a }}</h1>
+    <button @click="$store.commit('change', $store.state.a + 1)">按钮</button>
   </div>
 </template>
 <script>

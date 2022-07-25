@@ -55,12 +55,6 @@
               >
                 <template v-slot:error>加载失败</template>
               </van-image>
-              <!-- <img
-                alt=""
-                v-for="(value, index) in v.imageSrc"
-                :src="value"
-                :key="index"
-              /> -->
             </div>
             <div class="home-three-for">
               <span> 日期：{{ timestampToTime(v.time) }} </span>
@@ -69,11 +63,15 @@
         </div>
       </van-list>
     </van-pull-refresh>
+    <buttom></buttom>
   </div>
 </template>
 <script>
-import { Toast } from "vant";
+import buttom from "../index/buttom.vue";
 export default {
+  components: {
+    buttom,
+  },
   data() {
     return {
       loading: false,

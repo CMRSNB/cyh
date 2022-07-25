@@ -1,47 +1,37 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import home from "../views/index/home.vue";
-import button from "../views/index/buttom.vue";
-Vue.use(VueRouter);
 
+Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "button",
-    component: button,
+    name: "home",
+    component: home,
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-    children: [
-      {
-        path: "/",
-        name: "home",
-        component: home,
-        meta: {
-          needLogin: true, //需要加校检判断的路由
-        },
-      },
-      {
-        path: "/my",
-        name: "my",
-        component: () =>
-          import(/* webpackChunkName: "about" */ "../views/index/my.vue"),
-        meta: {
-          needLogin: true, //需要加校检判断的路由
-        },
-      },
-      {
-        path: "/publish",
-        name: "publish",
-
-        component: () =>
-          import(/* webpackChunkName: "about" */ "../views/index/publish.vue"),
-        meta: {
-          needLogin: true, //需要加校检判断的路由
-        },
-      },
-    ],
   },
+  {
+    path: "/my",
+    name: "my",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/index/my.vue"),
+    meta: {
+      needLogin: true, //需要加校检判断的路由
+    },
+  },
+  {
+    path: "/publish",
+    name: "publish",
+
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/index/publish.vue"),
+    meta: {
+      needLogin: true, //需要加校检判断的路由
+    },
+  },
+
   {
     path: "/reg",
     name: "reg",
