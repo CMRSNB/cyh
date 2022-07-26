@@ -107,28 +107,29 @@ export default {
         });
       });
       imageSrc = await Promise.all(task);
-      // console.log(imageSrc);
+      console.log(imageSrc);
       return imageSrc;
     }, //上传图片
     fb() {
       let { title, content, fileList } = this;
-      this.upload(fileList).then((res) => {
-        // console.log(res);
-        this.res = res;
-      });
-      this.axios
-        .post("/api/add_article", {
-          title, //标题
-          content, //内容
-          cate_name: this.fbmk.name, //分类名字
-          cate_id: this.fbmk.id, //分类ID
-          author: title, //发布者名字
-          author_id: localStorage.getItem("uid"),
-          imageSrc: ["https://obohe.com/i/2022/07/26/hc96bg.jpg"],
-        })
-        .then((result) => {
-          console.log(result);
-        });
+      this.upload(fileList);
+      // .then((res) => {
+      //   // console.log(res);
+      //   this.res = res;
+      // });
+      // this.axios
+      //   .post("/api/add_article", {
+      //     title, //标题
+      //     content, //内容
+      //     cate_name: this.fbmk.name, //分类名字
+      //     cate_id: this.fbmk.id, //分类ID
+      //     author: title, //发布者名字
+      //     author_id: localStorage.getItem("uid"),
+      //     imageSrc: ["https://obohe.com/i/2022/07/26/hc96bg.jpg"],
+      //   })
+      //   .then((result) => {
+      //     console.log(result);
+      //   });
     }, //点击提交
   },
   beforeCreate() {
