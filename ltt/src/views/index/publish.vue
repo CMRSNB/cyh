@@ -55,15 +55,12 @@ export default {
       value1: 0,
       title: "", //标题
       content: "", //发布内容
-      fileList: [
-        { url: "https://img01.yzcdn.cn/vant/leaf.jpg" },
-        // Uploader 根据文件后缀来判断是否为图片文件
-        // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
-        { url: "https://cloud-image", isImage: true },
-      ],
+      fileList: [], //图片数组
       fbmk: [], //模板列表
       username: "", //名字
       tokenID: "",
+      token: "",
+      res: [],
     };
   },
   methods: {
@@ -76,21 +73,63 @@ export default {
       this.show = false;
       Toast(item.name);
     },
+
+    async upload(fileList) {
+      let imageSrc = [];
+      if (!this.fileList || this.fileList == []) {
+        return imageSrc;
+      }
+      // console.log(fileList);
+      let task = await fileList.map((v) => {
+        return new Promise(async (resolve, reject) => {
+          let { file } = v;
+          let { type } = file;
+          type = type.split("/")[1];
+          // 重新命名
+          let file_name = `${new Date().getTime()}_${Math.random()
+            .toString(36)
+            .slice(2)}.${type}`;
+          await this.axios.post("/upload/token").then((res) => {
+            // console.log(res.data.token);
+            this.token = res.data.token;
+          });
+          // let { token } = await this.axios.post("/upload/token");
+          const formdata = new FormData();
+          formdata.append("file", file);
+          formdata.append("token", this.token);
+          formdata.append("key", file_name);
+          await this.axios
+            .post("https://upload-z1.qiniup.com", formdata)
+            .then((res) => {
+              resolve(`http://toutiao.longxiaokj.com/` + res.key);
+            });
+          // console.log(result);
+        });
+      });
+      imageSrc = await Promise.all(task);
+      // console.log(imageSrc);
+      return imageSrc;
+    }, //上传图片
     fb() {
+      let { title, content, fileList } = this;
+      this.upload(fileList).then((res) => {
+        // console.log(res);
+        this.res = res;
+      });
       this.axios
         .post("/api/add_article", {
-          title: this.title, //标题
-          content: this.content, //内容
+          title, //标题
+          content, //内容
           cate_name: this.fbmk.name, //分类名字
           cate_id: this.fbmk.id, //分类ID
-          author: this.title,
+          author: title, //发布者名字
           author_id: localStorage.getItem("uid"),
-          imageSrc: ["https://i.postimg.cc/zf45MQzQ/20220719115836.jpg"], //图片链接
+          imageSrc: ["https://obohe.com/i/2022/07/26/hc96bg.jpg"],
         })
         .then((result) => {
           console.log(result);
         });
-    },
+    }, //点击提交
   },
   beforeCreate() {
     this.axios.post("/api/get_cate_list").then((res) => {
@@ -100,11 +139,10 @@ export default {
       });
     });
     this.username = localStorage.getItem("username");
-    console.log(this.username);
+    // console.log(this.username);
     this.tokenID = localStorage.getItem("tokenID");
-    console.log(this.tokenID);
+    // console.log(this.tokenID);
   },
-  mounted() {},
 };
 </script>
 <style lang="less">

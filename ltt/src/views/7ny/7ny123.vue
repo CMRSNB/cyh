@@ -118,7 +118,6 @@ export default {
         //  没上传图片
         return imageSrc;
       }
-
       // 需要 循环
       //  多个异步任务都执行完成  返回他们完成后的结果
       let task = fileList.map((v) => {
@@ -134,7 +133,6 @@ export default {
           // 去服务器申请一个上传token
           let { token } = await getUploadToken();
           console.log(token);
-
           const formdata = new FormData();
           formdata.append("file", file);
           formdata.append("token", token);

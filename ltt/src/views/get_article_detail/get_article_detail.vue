@@ -49,22 +49,22 @@
             <div class="ejpl">
               <div class="ejpl-left">
                 <div>
-                  <img :src="pllb[ejsy].info.avatar" alt="" />
+                  <img :src="pllb[i].info.avatar" alt="" />
                 </div>
                 <div class="ejpl-three">
-                  <h3>{{ pllb[ejsy].info.nickname }}</h3>
+                  <h3>{{ pllb[i].info.nickname }}</h3>
 
-                  <h4>{{ pllb[ejsy].content }}</h4>
-                  <span> {{ timestampToTime(pllb[ejsy].create_time) }}</span>
+                  <h4>{{ pllb[i].content }}</h4>
+                  <span> {{ timestampToTime(pllb[i].create_time) }}</span>
                 </div>
               </div>
               <div class="ejpl-right">
                 <van-icon
                   name="good-job"
-                  :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
+                  :style="{ color: pllb[i].is_like ? 'red' : '#ccc' }"
                   @click="pldz(v, i)"
                 />
-                <span>{{ pllb[ejsy].like_count }}</span>
+                <span>{{ pllb[i].like_count }}</span>
                 <!-- 点赞 -->
               </div>
             </div>
@@ -76,7 +76,7 @@
                     <img :src="value.info.avatar" alt="" />
                   </div>
                   <div class="ejpl-three">
-                    <h3>{{ value.info.nickname }}</h3>
+                    <h3>{{ value.info[index].nickname }}</h3>
                     <h4>{{ value.content }}</h4>
                     <span>{{ timestampToTime(vv.create_time) }}</span>
                   </div>
@@ -308,6 +308,8 @@ export default {
               // console.log(res);
               this.pllb = res.data.data;
               // console.log(this.pllb);
+
+              // console.log(this.pllb.info);
             });
         });
     }, //发布评论
@@ -348,7 +350,7 @@ export default {
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
         // console.log(res.data);
-        console.log(this.wzxq);
+        // console.log(this.wzxq);
       });
 
     this.axios
@@ -361,7 +363,8 @@ export default {
       .then((res) => {
         this.pllb = res.data.data;
         // console.log(res.data.data);
-        console.log(this.pllb);
+        // console.log(this.pllb);
+        // console.log(this.pllb[0].info);
       });
   },
 };
