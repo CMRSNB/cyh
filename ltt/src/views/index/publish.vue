@@ -59,7 +59,7 @@ export default {
       fbmk: [], //模板列表
       username: "", //名字
       tokenID: "",
-      token: "",
+      tokens: "",
       res: [],
     };
   },
@@ -91,12 +91,12 @@ export default {
             .slice(2)}.${type}`;
           await this.axios.post("/upload/token").then((res) => {
             // console.log(res.data.token);
-            this.token = res.data.token;
+            this.tokens = res.data.token;
           });
           // let { token } = await this.axios.post("/upload/token");
           const formdata = new FormData();
           formdata.append("file", file);
-          formdata.append("token", this.token);
+          formdata.append("token", this.tokens);
           formdata.append("key", file_name);
           await this.axios
             .post("https://upload-z1.qiniup.com", formdata)

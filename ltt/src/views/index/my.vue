@@ -15,11 +15,11 @@
       </div>
       <div class="my-top-tow">
         <div class="my-top-tow-list">
-          <i>1</i>
+          <i>{{ fbhz.liked_num }}</i>
           <span>头条</span>
         </div>
         <div class="my-top-tow-right">
-          <i>3</i>
+          <i>{{ fbhz.publish_num }}</i>
           <span>获赞</span>
         </div>
       </div>
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       getuserInfo: [], //用户信息
+      fbhz: [],
     };
   },
   methods: {
@@ -80,8 +81,9 @@ export default {
       })
       .then((res) => {
         console.log(res.data);
+        this.fbhz = res.data;
         this.getuserInfo = res.data.userInfo;
-        console.log(this.getuserInfo);
+        // console.log(this.getuserInfo);
       });
   },
 };
