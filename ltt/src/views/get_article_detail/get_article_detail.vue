@@ -148,7 +148,6 @@ export default {
   components: {
     go: go,
   },
-
   data() {
     return {
       ejplhf: "",
@@ -337,7 +336,7 @@ export default {
   },
   mounted() {
     this.authorID = this.$route.query.authorID;
-    // console.log(this.authorID);
+    console.log(this.authorID);
     this.axios
       .post("/api/get_article_detail", {
         article_id: this.authorID,

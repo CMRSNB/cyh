@@ -11,7 +11,7 @@ const routes = [
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-  },
+  }, //主页面
   {
     path: "/my",
     name: "my",
@@ -20,7 +20,7 @@ const routes = [
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-  },
+  }, //我的页面
   {
     path: "/publish",
     name: "publish",
@@ -30,7 +30,7 @@ const routes = [
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-  },
+  }, //发布页面
 
   {
     path: "/reg",
@@ -38,14 +38,14 @@ const routes = [
 
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/reg/reg.vue"),
-  },
+  }, //注册页面
   {
     path: "/login",
     name: "login",
 
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/login/login.vue"),
-  },
+  }, //登录页面
   {
     path: "/userEdit",
     name: "userEdit",
@@ -55,7 +55,7 @@ const routes = [
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-  },
+  }, //个人信息界面
   {
     path: "/updatePwd",
     name: "updatePwd",
@@ -63,10 +63,7 @@ const routes = [
       import(
         /* webpackChunkName: "about" */ "../views/updatePwd/updatePwd.vue"
       ),
-    meta: {
-      needLogin: true, //需要加校检判断的路由
-    },
-  },
+  }, //修改密码页面
   {
     path: "/search",
     name: "search",
@@ -76,7 +73,7 @@ const routes = [
     meta: {
       needLogin: true, //需要加校检判断的路由
     },
-  },
+  }, //搜索页面
 
   {
     path: "/forget",
@@ -84,10 +81,7 @@ const routes = [
 
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/forget/forget.vue"),
-    meta: {
-      needLogin: true, //需要加校检判断的路由
-    },
-  },
+  }, //忘记密码
   {
     path: "/editUserInfo",
     name: "editUserInfo",
@@ -108,10 +102,7 @@ const routes = [
       import(
         /* webpackChunkName: "about" */ "../views/get_article_detail/get_article_detail.vue"
       ),
-    meta: {
-      needLogin: true, //需要加校检判断的路由
-    },
-  },
+  }, //w文章详情界面
 ];
 
 const router = new VueRouter({

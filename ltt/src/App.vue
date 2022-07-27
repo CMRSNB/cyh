@@ -1,9 +1,11 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.needLogin"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.needLogin"></router-view>
   </div>
 </template>
-
 <script>
 export default {
   mounted() {

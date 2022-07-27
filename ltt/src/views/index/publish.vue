@@ -11,7 +11,6 @@
         v-model="content"
         rows="2"
         type="textarea"
-        maxlength="500"
         placeholder="请输入内容"
         show-word-limit
       />
@@ -73,7 +72,6 @@ export default {
       this.show = false;
       Toast(item.name);
     },
-
     async upload(fileList) {
       let imageSrc = [];
       if (!this.fileList || this.fileList == []) {
@@ -101,35 +99,40 @@ export default {
           await this.axios
             .post("https://upload-z1.qiniup.com", formdata)
             .then((res) => {
-              resolve(`http://toutiao.longxiaokj.com/` + res.key);
+              // console.log(res);
+              // console.log(`http://toutiao.longxiaokj.com/` + res.data.key);
+              resolve(`http://toutiao.longxiaokj.com/` + res.data.key);
             });
           // console.log(result);
         });
       });
       imageSrc = await Promise.all(task);
-      console.log(imageSrc);
+      // console.log(imageSrc);
       return imageSrc;
     }, //上传图片
-    fb() {
+    async fb() {
       let { title, content, fileList } = this;
-      this.upload(fileList);
-      // .then((res) => {
-      //   // console.log(res);
-      //   this.res = res;
-      // });
-      // this.axios
-      //   .post("/api/add_article", {
-      //     title, //标题
-      //     content, //内容
-      //     cate_name: this.fbmk.name, //分类名字
-      //     cate_id: this.fbmk.id, //分类ID
-      //     author: title, //发布者名字
-      //     author_id: localStorage.getItem("uid"),
-      //     imageSrc: ["https://obohe.com/i/2022/07/26/hc96bg.jpg"],
-      //   })
-      //   .then((result) => {
-      //     console.log(result);
-      //   });
+      let res = await this.upload(fileList);
+      console.log(res);
+      this.axios
+        .post("/api/add_article", {
+          title, //标题
+          content, //内容
+          cate_name: this.fbmk.name, //分类名字
+          cate_id: this.fbmk.id, //分类ID
+          author: title, //发布者名字
+          author_id: localStorage.getItem("uid"),
+          imageSrc: res,
+        })
+        .then((result) => {
+          console.log(result);
+          this.$toast(result.data.msg);
+          if (result.data.error === 0) {
+            title = "";
+            content = ""; //发布内容
+            fileList = []; //图片数组
+          }
+        });
     }, //点击提交
   },
   beforeCreate() {

@@ -2,7 +2,10 @@
   <div class="userEdit">
     <div><go></go> <van-nav-bar title="个人信息" /></div>
     <div class="userEdit-tow">
-      <van-cell title="头像" is-link />
+      <van-cell title="头像" is-link value="内容">
+        <img src="../../assets/效果图/article.png" alt="" />
+        <van-uploader :after-read="afterRead" />
+      </van-cell>
       <van-cell-group>
         <van-field v-model="username" label="昵称" placeholder="请输入用户名" />
       </van-cell-group>
@@ -53,6 +56,10 @@ export default {
     go: go,
   },
   methods: {
+    afterRead(file) {
+      // 此时可以自行将文件上传至服务器
+      console.log(file);
+    },
     formatDate(date) {
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
@@ -91,6 +98,11 @@ export default {
 };
 </script>
 <style>
+.userEdit-tow img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
 .userEdit-tow {
   margin-bottom: 20px;
 }

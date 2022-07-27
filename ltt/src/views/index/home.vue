@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="home-one">
-      <span
+      <span @click="search"
         ><em><van-icon name="search" /></em>搜索</span
       >
     </div>
@@ -87,6 +87,9 @@ export default {
     };
   },
   methods: {
+    search() {
+      this.$router.push("/search");
+    },
     // 时间戳：1637244864707
     /* 时间戳转换为时间 */
     timestampToTime(timestamp) {
@@ -155,17 +158,13 @@ export default {
 
     vixq(v) {
       // console.log(v);
-      this.$router
-        .push({
-          path: "/getArticleDetail",
-          query: {
-            authorID: v._id,
-          },
-        })
-        .then((res) => {
-          // console.log(res.data.data);
-        });
-    },
+      this.$router.push({
+        path: "/getArticleDetail",
+        query: {
+          authorID: v._id,
+        },
+      });
+    }, //点击跳转详情页
     home(index) {
       this.index = index;
 
@@ -226,7 +225,7 @@ export default {
     display: inline-block;
     width: 300px;
     height: 35px;
-    background-color: aquamarine;
+    background-color: rgb(6, 220, 102);
     border-radius: 20px;
     font-size: 18px;
     color: rgb(255, 255, 255);
