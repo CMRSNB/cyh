@@ -1,13 +1,11 @@
 <template>
   <div class="home">
-    <div>
-      <van-search
-        v-model="value"
-        shape="round"
-        background="#4fc08d"
-        placeholder="请输入搜索关键词"
-      />
+    <div class="home-one">
+      <span
+        ><em><van-icon name="search" /></em>搜索</span
+      >
     </div>
+    <!-- 搜索 -->
     <div class="home-tow">
       <van-tabs @click="home">
         <van-tab
@@ -18,6 +16,7 @@
         </van-tab>
       </van-tabs>
     </div>
+
     <van-pull-refresh
       v-model="isLoading"
       @refresh="onRefresh()"
@@ -216,6 +215,26 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.home-one {
+  background-color: @color;
+  height: 47.89px;
+  text-align: center;
+  line-height: 47.89px;
+  span {
+    line-height: 35px;
+    text-align: center;
+    display: inline-block;
+    width: 300px;
+    height: 35px;
+    background-color: aquamarine;
+    border-radius: 20px;
+    font-size: 18px;
+    color: rgb(255, 255, 255);
+    i {
+      font-size: 20px;
+    }
+  }
+}
 .home-nr {
   width: 375px;
   margin-bottom: 50px;
