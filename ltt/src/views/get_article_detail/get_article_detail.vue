@@ -52,7 +52,7 @@
         >
           <div class="ejpl-top"><h3>回复</h3></div>
           <!-- 二级评论上面回复 -->
-          <div class="ejpl">
+          <div class="ejpl ejplzz">
             <div class="ejpl-left">
               <div>
                 <img :src="pllb[ejsy].info.avatar" alt="" />
@@ -131,7 +131,7 @@
     <div class="detail-six">
       <div class="detail-six-list">
         <van-cell-group>
-          <van-field v-model="value" placeholder="写评论" autosize />
+          <van-field v-model="value" placeholder="网络不是法外之地" autosize />
         </van-cell-group>
       </div>
       <div class="detail-six-right">
@@ -471,10 +471,17 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.ejplzz {
+  // height: 70px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
 .ejpl {
   display: flex;
   width: 375px;
   justify-content: space-around;
+  margin-bottom: 20px;
 }
 .ejpl-left {
   width: 260px;
@@ -494,7 +501,7 @@ export default {
 }
 .ejpl-right {
   width: 40px;
-  height: 98px;
+  // height: 98px;
 }
 
 .ejpl-three {
