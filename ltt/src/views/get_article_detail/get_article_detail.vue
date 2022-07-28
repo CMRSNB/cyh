@@ -1,10 +1,11 @@
 <template>
   <div class="detail">
     <div class="detail-top"><go></go><van-nav-bar title="文章详情" /></div>
-
+    <!-- 文章详情 -->
     <div class="detail-tow">
       <h4>{{ wzxq.title }}</h4>
     </div>
+    <!-- 文章标题 -->
     <div class="detail-three">
       <div class="detail-three-list">
         <img :src="wzxq.avatar" alt="" />
@@ -38,72 +39,82 @@
             <span> {{ timestampToTime(v.create_time) }}</span>
             <em @click="ejpll(v, i)">{{ v.reply_num }}回复</em>
           </div>
-          <van-popup
-            v-model="EJPL"
-            position="bottom"
-            closeable
-            :style="{ height: '100%' }"
-          >
-            <div class="ejpl-top"><h3>回复</h3></div>
+          <!-- 点击回复出现二级评论 -->
+        </div>
+        <!-- 点击回复出现 -->
+      </div>
+      <div>
+        <van-popup
+          v-model="EJPL"
+          position="bottom"
+          closeable
+          :style="{ height: '100%' }"
+        >
+          <div class="ejpl-top"><h3>回复</h3></div>
+          <!-- 二级评论上面回复 -->
+          <div class="ejpl">
+            <div class="ejpl-left">
+              <div>
+                <img :src="pllb[ejsy].info.avatar" alt="" />
+              </div>
+              <div class="ejpl-three">
+                <h3>{{ pllb[ejsy].info.nickname }}</h3>
 
-            <div class="ejpl">
+                <h4>{{ pllb[ejsy].content }}</h4>
+                <span> {{ timestampToTime(pllb[i].create_time) }}</span>
+              </div>
+            </div>
+            <div class="ejpl-right">
+              <van-icon
+                name="good-job"
+                :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
+                @click="pldz(v, i)"
+              />
+              <span>{{ pllb[ejsy].like_count }}</span>
+            </div>
+          </div>
+          <!-- 二级评论评论人详情 -->
+          <div class="ejplpllb">
+            <div class="ejpl" v-for="(value, index) in ejplllb" :key="index">
               <div class="ejpl-left">
                 <div>
-                  <img :src="pllb[i].info.avatar" alt="" />
+                  <img :src="value.info.avatar" alt="" />
                 </div>
                 <div class="ejpl-three">
-                  <h3>{{ pllb[i].info.nickname }}</h3>
-
-                  <h4>{{ pllb[i].content }}</h4>
-                  <span> {{ timestampToTime(pllb[i].create_time) }}</span>
+                  <h3>{{ value.info.nickname }}回复123</h3>
+                  <h4>{{ value.content }}</h4>
+                  <span>{{ timestampToTime(value.create_time) }}</span>
                 </div>
               </div>
               <div class="ejpl-right">
                 <van-icon
                   name="good-job"
-                  :style="{ color: pllb[i].is_like ? 'red' : '#ccc' }"
-                  @click="pldz(v, i)"
+                  @click="ejpldz(value, index)"
+                  :style="{ color: value.is_like ? 'red' : '#ccc' }"
                 />
-                <span>{{ pllb[i].like_count }}</span>
-                <!-- 点赞 -->
+                <span>{{ value.like_count }}</span>
               </div>
             </div>
-            <!-- 二级评论进去第一项 -->
-            <div class="ejplpllb">
-              <div class="ejpl" v-for="(value, index) in ejplllb" :key="index">
-                <div class="ejpl-left">
-                  <div>
-                    <img :src="value.info.avatar" alt="" />
-                  </div>
-                  <div class="ejpl-three">
-                    <h3>{{ value.info[index].nickname }}</h3>
-                    <h4>{{ value.content }}</h4>
-                    <span>{{ timestampToTime(vv.create_time) }}</span>
-                  </div>
-                </div>
-                <div class="ejpl-right">
-                  <van-icon name="good-job" />
-                  <!-- <van-icon
-                    name="good-job"
-                    :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
-                  /> -->
-                  <span>{{ vv.like_count }}</span>
-                  <!-- 点赞 -->
-                </div>
-              </div>
-              <!-- Field 是基于 Cell 实现的，可以使用 CellGroup 作为容器来提供外边框。 -->
-              <van-cell-group>
-                <van-field
-                  v-model="ejplhf"
-                  label="文本"
-                  placeholder="请输入用户名"
-                />
-              </van-cell-group>
-            </div>
-          </van-popup>
-        </div>
-        <!-- 点击回复出现 -->
+          </div>
+          <!-- 二级评论评论列表 -->
+          <div class="ejpl-buttom">
+            <van-field
+              v-model="sms"
+              center
+              clearable
+              placeholder="网络不是，法外之地"
+            >
+              <template #button>
+                <van-button size="small" type="primary" @click="ejplplnr"
+                  >评论</van-button
+                >
+              </template>
+            </van-field>
+          </div>
+          <!-- 二级评论评论内容 -->
+        </van-popup>
       </div>
+      <!-- 二级评论 -->
       <div class="detail-five-right">
         <div class="detail-five-right-left"></div>
         <div class="detail-five-right-right">
@@ -117,7 +128,6 @@
       </div>
     </div>
     <!-- 评论详情 -->
-
     <div class="detail-six">
       <div class="detail-six-list">
         <van-cell-group>
@@ -139,6 +149,7 @@
         <van-icon name="share" />
       </div>
     </div>
+    <!-- 最下面 -->
   </div>
 </template>
 
@@ -150,6 +161,7 @@ export default {
   },
   data() {
     return {
+      sms: "", //二级评论内容
       ejplhf: "",
       EJPL: false,
       show: false,
@@ -159,38 +171,99 @@ export default {
       value: "",
       authorID: "",
       wzxq: {},
-      pllb: [],
+      pllb: [], //评论列表
       sttus: 1,
       reply_comment_id: "",
       erjipinglun: "",
       is_fav: false,
       is_like: false,
-      ejsy: 1,
-      ejplllb: [],
+      ejsy: 0, //点击回复出现传出的二级评论索引
+      ejplllb: [], //二级评论列表
+      ejisLINK: false, //二级评论点赞
     };
   },
   methods: {
-    showPopup() {
-      this.show = true;
-    },
+    ejpldz(value, index) {
+      // value.ejisLINK = !value.ejisLINK;
+      value.is_like = !value.is_like;
+      if (value.is_like) {
+        value.like_count++;
+        this.axios
+          .post("/api/comment_like", {
+            user_id: localStorage.getItem("uid"),
+            comment_id: value._id,
+          })
+          .then((res) => {
+            console.log(res);
+            this.$toast(res.data.msg);
+          });
+      } else {
+        value.like_count--;
+        this.axios
+          .post("/api/comment_unlike", {
+            user_id: localStorage.getItem("uid"),
+            comment_id: value._id,
+          })
+          .then((res) => {
+            console.log(res);
+            this.$toast(res.data.msg);
+          });
+      }
+
+      console.log(11);
+    }, //二级评论点赞
+    ejplplnr() {
+      // console.log(111);
+      if (localStorage.getItem("uid")) {
+        this.axios
+          .post("/api/add_comment", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+            comment_type: 1,
+            reply_comment_id: this.pllb[this.ejsy]._id, //评论的人的ID
+            content: this.sms, //二级评论内容
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.axios
+              .post("/api/get_reply_list", {
+                article_id: this.authorID,
+                skip: 0,
+                limit: 5,
+                reply_comment_id: this.pllb[this.ejsy]._id,
+                user_id: localStorage.getItem("uid"),
+              })
+              .then((res) => {
+                console.log(res.data.data);
+                this.ejplllb = res.data.data;
+              });
+          });
+      } else {
+        this.$toast("请先登录");
+        setTimeout(() => {
+          this.$router.push("/my");
+        }, 1000);
+      }
+    }, //二级评论评论=>评论
     ejpll(v, i) {
       this.EJPL = !this.EJPL;
       // console.log(i);
       this.ejsy = i;
+      console.log(this.ejsy);
       // console.log(this.pllb[i]._id);
       this.axios
         .post("/api/get_reply_list", {
           article_id: this.authorID,
           skip: 0,
           limit: 5,
-          reply_comment_id: this.pllb[i]._id,
+          reply_comment_id: this.pllb[this.ejsy]._id,
           user_id: localStorage.getItem("uid"),
         })
         .then((res) => {
           console.log(res.data.data);
           this.ejplllb = res.data.data;
         });
-    }, //二级评论
+    }, //点击回复出现二级评论弹出框
     onSubmit(values) {
       this.axios
         .post("/api/add_comment", {
@@ -206,114 +279,142 @@ export default {
       // console.log("submit", values);
     },
     wzsc() {
-      this.is_fav = !this.is_fav;
-      if (this.is_fav == true) {
-        this.axios
-          .post("/api/add_fav", {
-            user_id: localStorage.getItem("uid"),
-            article_id: this.authorID,
-          })
-          .then((res) => {
-            console.log(res);
-            this.$toast(res.data.msg);
-          });
-      } else {
-        this.axios
-          .post("/api/remove_fav", {
-            user_id: localStorage.getItem("uid"),
-            article_id: this.authorID,
-          })
-          .then((res) => {
-            this.$toast(res.data.msg);
+      if (localStorage.getItem("uid")) {
+        this.is_fav = !this.is_fav;
+        if (this.is_fav == true) {
+          this.axios
+            .post("/api/add_fav", {
+              user_id: localStorage.getItem("uid"),
+              article_id: this.authorID,
+            })
+            .then((res) => {
+              console.log(res);
+              this.$toast(res.data.msg);
+            });
+        } else {
+          this.axios
+            .post("/api/remove_fav", {
+              user_id: localStorage.getItem("uid"),
+              article_id: this.authorID,
+            })
+            .then((res) => {
+              this.$toast(res.data.msg);
 
-            // console.log(res);
-          });
+              // console.log(res);
+            });
+        }
+      } else {
+        this.$toast("请先登录");
+        setTimeout(() => {
+          this.$router.push("/my");
+        }, 1000);
       }
     }, //文章收藏
     pldz(v, i) {
-      // console.log(i);
-      v.is_like = !v.is_like;
-      // console.log(v.is_like);
-      // console.log(v);
-      if (v.is_like == true) {
-        v.like_count++;
-        this.axios
-          .post("/api/comment_like", {
-            user_id: localStorage.getItem("uid"),
-            comment_id: v._id,
-          })
-          .then((res) => {
-            // console.log(res);
-          });
-      } else {
-        v.like_count--;
-        this.axios
-
-          .post("/api/comment_unlike", {
-            user_id: localStorage.getItem("uid"),
-            comment_id: v._id,
-          })
-          .then((res) => {
-            // console.log(res);
-          });
-      }
-    }, //评论点赞
-    wzdz() {
-      this.is_like = !this.is_like;
-      if (this.is_like == true) {
-        this.axios
-          .post("/api/like", {
-            user_id: localStorage.getItem("uid"),
-            article_id: this.authorID,
-          })
-          .then((res) => {
-            this.$toast(res.data.msg);
-
-            // console.log(res);
-          });
-      } else {
-        this.axios
-          .post("/api/unlike", {
-            user_id: localStorage.getItem("uid"),
-            article_id: this.authorID,
-          })
-          .then((res) => {
-            this.$toast(res.data.msg);
-
-            // console.log(res);
-          });
-      }
-    }, //文章点赞
-    fbpl() {
-      this.axios
-        .post("/api/add_comment", {
-          user_id: localStorage.getItem("uid"),
-          article_id: this.authorID,
-          comment_type: 0,
-          // reply_comment_id: "",
-          content: this.value,
-        })
-        .then((res) => {
-          this.$toast(res.data.msg);
-          // console.log(res.data.msg);
+      if (localStorage.getItem("uid")) {
+        // console.log(i);
+        v.is_like = !v.is_like;
+        // console.log(v.is_like);
+        // console.log(v);
+        if (v.is_like == true) {
+          v.like_count++;
           this.axios
-            .post("/api/get_comment_list", {
-              article_id: this.authorID,
-              skip: 0,
-              limit: 10,
+            .post("/api/comment_like", {
               user_id: localStorage.getItem("uid"),
+              comment_id: v._id,
             })
             .then((res) => {
               // console.log(res);
-              this.pllb = res.data.data;
-              // console.log(this.pllb);
-
-              // console.log(this.pllb.info);
             });
-        });
+        } else {
+          v.like_count--;
+          this.axios
+
+            .post("/api/comment_unlike", {
+              user_id: localStorage.getItem("uid"),
+              comment_id: v._id,
+            })
+            .then((res) => {
+              // console.log(res);
+            });
+        }
+      } else {
+        this.$toast("请先登录");
+        setTimeout(() => {
+          this.$router.push("/my");
+        }, 1000);
+      }
+    }, //评论点赞
+    wzdz() {
+      if (localStorage.getItem("uid")) {
+        this.is_like = !this.is_like;
+        if (this.is_like == true) {
+          this.axios
+            .post("/api/like", {
+              user_id: localStorage.getItem("uid"),
+              article_id: this.authorID,
+            })
+            .then((res) => {
+              this.$toast(res.data.msg);
+
+              // console.log(res);
+            });
+        } else {
+          this.axios
+            .post("/api/unlike", {
+              user_id: localStorage.getItem("uid"),
+              article_id: this.authorID,
+            })
+            .then((res) => {
+              this.$toast(res.data.msg);
+
+              // console.log(res);
+            });
+        }
+      } else {
+        this.$toast("请先登录");
+        setTimeout(() => {
+          this.$router.push("/my");
+        }, 1000);
+      }
+    }, //文章点赞
+    fbpl() {
+      if (localStorage.getItem("uid")) {
+        this.axios
+          .post("/api/add_comment", {
+            user_id: localStorage.getItem("uid"),
+            article_id: this.authorID,
+            comment_type: 0,
+            // reply_comment_id: "",
+            content: this.value,
+          })
+          .then((res) => {
+            this.$toast(res.data.msg);
+            // console.log(res.data.msg);
+            this.axios
+              .post("/api/get_comment_list", {
+                article_id: this.authorID,
+                skip: 0,
+                limit: 10,
+                user_id: localStorage.getItem("uid"),
+              })
+              .then((res) => {
+                // console.log(res);
+                this.pllb = res.data.data;
+                // console.log(this.pllb);
+
+                // console.log(this.pllb.info);
+              });
+          });
+      } else {
+        this.$toast("请先登录");
+
+        setTimeout(() => {
+          this.$router.push("/my");
+        }, 1000);
+      }
     }, //发布评论
-    // 时间戳：1637244864707
-    /* 时间戳转换为时间 */
+
     timestampToTime(timestamp) {
       timestamp = timestamp ? timestamp : null;
       let date = new Date(timestamp); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
@@ -332,11 +433,12 @@ export default {
       let s =
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
-    },
+    }, // 时间戳：1637244864707
+    /* 时间戳转换为时间 */
   },
   mounted() {
     this.authorID = this.$route.query.authorID;
-    console.log(this.authorID);
+    // console.log(this.authorID);
     this.axios
       .post("/api/get_article_detail", {
         article_id: this.authorID,
@@ -361,10 +463,10 @@ export default {
       })
       .then((res) => {
         this.pllb = res.data.data;
-        // console.log(res.data.data);
+        console.log(res.data.data);
         // console.log(this.pllb);
         // console.log(this.pllb[0].info);
-      });
+      }); //评论列表
   },
 };
 </script>
@@ -397,6 +499,12 @@ export default {
 
 .ejpl-three {
   width: 200px;
+}
+.ejpl-buttom {
+  width: 376px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 .ejpl-three h3 {

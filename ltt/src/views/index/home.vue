@@ -135,7 +135,7 @@ export default {
           this.finished = true;
         }
       }, 1000);
-    }, //底部
+    }, //底部刷新
     onRefresh() {
       setTimeout(() => {
         this.isLoading = false;
@@ -152,7 +152,7 @@ export default {
             this.wzlb = res.data.data;
           });
       }, 1000);
-    }, //上面
+    }, //上拉刷新
 
     vixq(v) {
       // console.log(v);

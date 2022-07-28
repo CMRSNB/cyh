@@ -1,6 +1,6 @@
 <template>
   <div class="my">
-    <div class="my-top">
+    <div class="my-top" v-if="sfdl">
       <div class="my-top-top">
         <div class="my-top-top-lest">
           <!-- {{ $store.state.isLogin }} -->
@@ -24,6 +24,18 @@
         </div>
       </div>
     </div>
+    <div class="my-wdl" v-else>
+      <div class="my-wdl-max">
+        <div class="my-wdl-one">
+          <img src="../../assets/效果图/article.png" alt="" />
+        </div>
+        <div class="my-wdl-tow">
+          <router-link to="/reg" active-class="dlzctb">注册/</router-link>
+          <router-link to="/login" active-class="dlzctb">登录</router-link>
+        </div>
+      </div>
+    </div>
+
     <div class="my-tow">
       <div class="my-tow-left">
         <span><van-icon name="star-o" color="#011627" /></span>
@@ -44,6 +56,8 @@
         >退出登录</van-button
       >
     </div>
+    <!-- 退出登录 -->
+
     <buttom></buttom>
   </div>
 </template>
@@ -55,8 +69,10 @@ export default {
   },
   data() {
     return {
+      sfdl: "false",
       getuserInfo: [], //用户信息
       fbhz: [],
+      uid: "",
     };
   },
   methods: {
@@ -71,10 +87,17 @@ export default {
       localStorage.setItem("username", "");
       localStorage.setItem("tokenID", "");
       localStorage.setItem("uid", "");
-      this.$router.push("/login");
+      this.$router.go(0);
     },
   },
   mounted() {
+    if (localStorage.getItem("uid")) {
+      this.sfdl = true;
+    } else {
+      this.sfdl = false;
+    }
+    // this.uid = localStorage.getItem("uid");
+
     this.axios
       .post("/user/getuserInfo", {
         token: localStorage.getItem("tokenID"),
@@ -97,11 +120,38 @@ export default {
 
   background-color: #f5f7f9;
 }
-.my-top {
-  width: 375px;
+.my-wdl-max {
+  width: 80px;
+  height: 100px;
+  margin: 0 auto;
+  padding-top: 50px;
+  .my-wdl-tow {
+    text-align: center;
+  }
+}
+.my-wdl {
   height: 200px;
   background-color: @color;
+  .my-wdl-one {
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+  }
+  .my-wdl-tow {
+    a {
+      font-size: 14px;
+      color: rgb(255, 255, 255);
+    }
+  }
 }
+.my-top {
+  height: 200px;
+  background-color: @color;
+  // display: none;
+}
+
 .my-top-top {
   height: 150px;
   width: 375px;

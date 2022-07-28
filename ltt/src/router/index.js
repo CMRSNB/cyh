@@ -17,9 +17,6 @@ const routes = [
     name: "my",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/index/my.vue"),
-    meta: {
-      needLogin: true, //需要加校检判断的路由
-    },
   }, //我的页面
   {
     path: "/publish",
@@ -97,7 +94,6 @@ const routes = [
   {
     path: "/getArticleDetail",
     name: "getArticleDetail",
-
     component: () =>
       import(
         /* webpackChunkName: "about" */ "../views/get_article_detail/get_article_detail.vue"

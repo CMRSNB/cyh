@@ -14,9 +14,9 @@
     </div>
     <div class="search-tow">
       <span>近期搜索：</span>
-      <div class="search-tow-one" v-for="(value, index) in jqss" :key="index">
-        <span>{{ value }}</span
-        ><i @click="qcmh(value, index)">x</i>
+      <div class="search-tow-one" v-for="(neirong, index) in jqss" :key="index">
+        <span>{{ neirong }}</span
+        ><i @click="qcmh(neirong, index)">x</i>
       </div>
     </div>
     <div class="search-three">
@@ -56,40 +56,46 @@ export default {
     };
   },
   methods: {
-    wzxq(value) {
-      this.jqss.unshift(value.title);
+    wzxq(neirong, index) {
+      // console.log(neirong.title);
+      // console.log(this.jqss);
+      this.jqss.unshift(neirong.title);
       localStorage.jqss = JSON.stringify(this.jqss);
       this.$router.push({
         path: "/getArticleDetail",
         query: {
-          authorID: value._id,
+          authorID: neirong._id,
         },
       });
-    }, //点击跳转文章详情
+    }, //点击文字跳转文章详情并记录搜索记录
     qcmh(value, index) {
-      console.log(index);
+      // console.log(index);
       this.jqss.splice(1, index);
       this.jqss.shift(value);
       localStorage.jqss = JSON.stringify(this.jqss);
     },
-
     input(e) {
-      // console.log(e);
-      // let timer = null;
-      // clearTimeout(timer);
-      // timer = setTimeout((v) => {
-      //   console.log(111);
-      // }, 1000);
-      this.axios
-        .post("/api/search", {
-          key_word: e,
-          skip: "0",
-          limit: "10",
-        })
-        .then((res) => {
-          console.log(res.data.data);
-          this.mhpp = res.data.data;
-        });
+      let qcdsq = function () {
+        for (let i = 1; i < 99; i++) {
+          clearInterval(i);
+        }
+      };
+      qcdsq();
+      setTimeout(() => {
+        // console.log(e);
+        this.axios
+          .post("/api/search", {
+            key_word: e,
+            skip: "0",
+            limit: "10",
+          })
+          .then((res) => {
+            // console.log(res.data.data);
+            this.mhpp = res.data.data;
+            // console.log(this.mhpp);
+            // this.$forceUpdate(this.mhpp);
+          });
+      }, 500);
     }, //搜索关键词
     onSearch(val) {
       this.jqss.unshift(val);
@@ -100,14 +106,20 @@ export default {
     },
   },
   mounted() {
-    console.log(123);
-
+    // console.log(123);
     this.jqss = JSON.parse(localStorage.getItem("jqss"));
+
+    console.log(this.jqss);
   },
 };
 </script>
 
 <style lang="less" scoped>
+.search-tow > span {
+  display: inline-block;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
 .search-tow {
   .search-tow-one {
     height: 50px;
