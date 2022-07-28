@@ -118,7 +118,6 @@ export default {
           this.wzlb = [];
           this.refreshing = false;
         }
-
         for (let i = 0; i < 10; i++) {
           this.axios
             .post("/api/get_article_list", {
@@ -132,7 +131,6 @@ export default {
           // this.wzlb.push(this.list.length + 1);
         }
         this.loading = false;
-
         if (this.wzlb.length >= this.counts * 10) {
           this.finished = true;
         }

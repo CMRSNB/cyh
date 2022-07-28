@@ -3,8 +3,18 @@
     <div><go></go> <van-nav-bar title="个人信息" /></div>
     <div class="userEdit-tow">
       <van-cell title="头像" is-link value="内容">
-        <img src="../../assets/效果图/article.png" alt="" />
-        <van-uploader :after-read="afterRead" />
+        <label for="tx"
+          ><img src="../../assets/效果图/article.png" alt=""
+        /></label>
+        <!-- 点击lable标签触发input事件 -->
+        <input
+          type="file"
+          hidden
+          accept="image/*"
+          ref="file"
+          id="tx"
+          @change="change"
+        />
       </van-cell>
       <van-cell-group>
         <van-field v-model="username" label="昵称" placeholder="请输入用户名" />
@@ -56,6 +66,11 @@ export default {
     go: go,
   },
   methods: {
+    change(e) {
+      // console.log(11);
+      console.log(e.target.files);
+    },
+
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
       console.log(file);
