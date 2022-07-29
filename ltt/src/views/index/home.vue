@@ -212,6 +212,18 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+::v-deep .van-tab{
+  border-bottom: 2px solid #ccc;
+border-right: 2px solid #ccc;
+}
+
+::v-deep .van-tab:nth-child(7){
+border-right: none
+}
+.home-tow{
+
+
+}
 .home-one {
   background-color: @color;
   height: 47.89px;
