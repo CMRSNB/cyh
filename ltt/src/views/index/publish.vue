@@ -133,10 +133,10 @@ export default {
         .then((result) => {
           console.log(result);
           this.$toast(result.data.msg);
-          if (result.data.error === 0) {
-            title = "";
-            content = ""; //发布内容
-            fileList = []; //图片数组
+          if (result.data.code == 0) {
+            this.title = "";
+           this.content = ""; //发布内容
+           this.fileList = []; //图片数组
           }
         });
     }, //点击提交

@@ -131,7 +131,8 @@ export default {
 }
 .my-wdl {
   height: 200px;
-  background-color: @color;
+  background: url('../../components/banner.jpg');
+background-size:cover;
   .my-wdl-one {
     img {
       width: 80px;
@@ -148,7 +149,9 @@ export default {
 }
 .my-top {
   height: 200px;
-  background-color: @color;
+  // background-color: @color;
+  background: url('../../components/banner.jpg');
+background-size:cover;
   // display: none;
 }
 
@@ -179,6 +182,7 @@ export default {
   height: 70px;
   border-radius: 50%;
   padding: 0 10px;
+  
 }
 
 .my-top-tow {
