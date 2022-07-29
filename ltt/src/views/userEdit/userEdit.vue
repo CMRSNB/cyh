@@ -4,8 +4,8 @@
     <div class="userEdit-tow">
       <van-cell title="头像" is-link value="内容">
         <label for="tx"
-          ><img src="../../assets/效果图/article.png" alt=""
-        /></label>
+          ><img :src="fileList" alt="" />
+        </label>
         <!-- 点击lable标签触发input事件 -->
         <input
           type="file"
@@ -60,15 +60,59 @@ export default {
       sex: "男",
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2093, 0, 31),
+      fileList:[]
     };
   },
   components: {
     go: go,
   },
   methods: {
-    change(e) {
+            // 上传图片
+    async upload(fileList) {
+      let imageSrc = [];
+      if (!this.fileList || this.fileList == []) {
+        return imageSrc;
+      }
+      // console.log(fileList);
+      let task = await fileList.map((v) => {
+        return new Promise(async (resolve, reject) => {
+          let { file } = v;
+          let { type } = file;
+          type = type.split("/")[1];
+          // 重新命名
+          let file_name = `${new Date().getTime()}_${Math.random()
+            .toString(36)
+            .slice(2)}.${type}`;
+          await this.axios.post("/upload/token").then((res) => {
+            console.log(res.data.token);
+            this.$store.state.tokens = res.data.token;
+            console.log(this.$store.state.tokens);
+          });
+
+          const formdata = new FormData();
+          formdata.append("file", file);
+          formdata.append("token", this.$store.state.tokens);
+          formdata.append("key", file_name);
+          await this.axios
+            .post("https://upload-z1.qiniup.com", formdata)
+            .then((res) => {
+              // console.log(res);
+              // console.log(`http://toutiao.longxiaokj.com/` + res.data.key);
+              resolve(`http://toutiao.longxiaokj.com/` + res.data.key);
+            });
+          // console.log(result);
+        });
+      });
+      imageSrc = await Promise.all(task);
+      // console.log(imageSrc);
+      return imageSrc;
+    }, //上传图片
+   async change(e) {
       // console.log(11);
-      console.log(e.target.files);
+      console.log(e);
+  this.fileList.push(e)
+  // let img=  await this.upload(fileList)
+  //   console.log(img);
     },
 
     afterRead(file) {
@@ -84,18 +128,20 @@ export default {
       console.log(this.formatDate(date));
       console.log(this.date);
     },
-    qd() {
+
+   async qd() {
+   let img=  await  this.upload(fileList)
       this.axios
         .post("/user/editUserInfo", {
           avatar:
-            "https://game.gtimg.cn/images/lol/act/img/champion/Malphite.png",
+            img,
           nickname: this.username,
           sex: this.sex,
           birthday: this.date,
           uid: localStorage.getItem("uid"),
         })
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           this.$toast(res.data.msg);
         });
     },
@@ -110,6 +156,22 @@ export default {
       Toast("取消");
     },
   },
+mounted() {
+    this.axios
+      .post("/user/getuserInfo", {
+        token: localStorage.getItem("tokenID"),
+      })
+      .then((res) => {
+        // console.log(res.data.userInfo.avatar);
+this.fileList=res.data.userInfo.avatar
+        // console.log(this.getuserInfo);
+      });
+
+
+
+},
+
+
 };
 </script>
 <style>

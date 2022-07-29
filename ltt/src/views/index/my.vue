@@ -162,6 +162,15 @@ export default {
 
 .my-top-top-lest {
   width: 280px;
+  span {
+    display: inline-block;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 70px;
+    font-size: 18px;
+  }
 }
 .my-top-top-lest img {
   // vertical-align: middle;
@@ -171,15 +180,7 @@ export default {
   border-radius: 50%;
   padding: 0 10px;
 }
-.my-top-top-lest span {
-  display: inline-block;
-  width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  line-height: 70px;
-  font-size: 18px;
-}
+
 .my-top-tow {
   height: 50px;
   width: 375px;

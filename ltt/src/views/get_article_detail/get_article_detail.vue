@@ -49,6 +49,7 @@
           position="bottom"
           closeable
           :style="{ height: '100%' }"
+
         >
           <div class="ejpl-top"><h3>回复</h3></div>
           <!-- 二级评论上面回复 -->
@@ -75,13 +76,13 @@
           </div>
           <!-- 二级评论评论人详情 -->
           <div class="ejplpllb">
-            <div class="ejpl" v-for="(value, index) in ejplllb" :key="index">
+            <div class="ejpl" v-for="(value, index) in ejplllb" :key="index" @click="sanjiplun(value, index)">
               <div class="ejpl-left">
                 <div>
                   <img :src="value.info.avatar" alt="" />
                 </div>
                 <div class="ejpl-three">
-                  <h3>{{ value.info.nickname }}回复123</h3>
+                  <h3>{{ value.info.nickname }} <span>回复=>123</span> </h3>
                   <h4>{{ value.content }}</h4>
                   <span>{{ timestampToTime(value.create_time) }}</span>
                 </div>
@@ -102,7 +103,7 @@
               v-model="sms"
               center
               clearable
-              placeholder="网络不是，法外之地"
+              :placeholder="'回复:'+sanjipinlu"
             >
               <template #button>
                 <van-button size="small" type="primary" @click="ejplplnr"
@@ -180,9 +181,15 @@ export default {
       ejsy: 0, //点击回复出现传出的二级评论索引
       ejplllb: [], //二级评论列表
       ejisLINK: false, //二级评论点赞
+      sanjipinlu:'作者'
     };
   },
   methods: {
+    sanjiplun(value, index){
+console.log(index);
+console.log(value);
+this.sanjipinlu=value.info.nickname
+    },//三级评论
     ejpldz(value, index) {
       // value.ejisLINK = !value.ejisLINK;
       value.is_like = !value.is_like;
@@ -224,7 +231,9 @@ export default {
             content: this.sms, //二级评论内容
           })
           .then((res) => {
-            console.log(res.data);
+           if(res.data.code==0){
+             this.sms=''
+               console.log(res.data);
             this.axios
               .post("/api/get_reply_list", {
                 article_id: this.authorID,
@@ -237,6 +246,10 @@ export default {
                 console.log(res.data.data);
                 this.ejplllb = res.data.data;
               });
+           }else{
+
+           }
+          
           });
       } else {
         this.$toast("请先登录");
@@ -389,9 +402,11 @@ export default {
             content: this.value,
           })
           .then((res) => {
+
             this.$toast(res.data.msg);
-            // console.log(res.data.msg);
-            this.axios
+            if(res.data.code==0){
+this.value=''
+          this.axios
               .post("/api/get_comment_list", {
                 article_id: this.authorID,
                 skip: 0,
@@ -402,9 +417,11 @@ export default {
                 // console.log(res);
                 this.pllb = res.data.data;
                 // console.log(this.pllb);
-
                 // console.log(this.pllb.info);
-              });
+              });    
+            }
+            // console.log(res.data.msg);
+            
           });
       } else {
         this.$toast("请先登录");
@@ -506,6 +523,9 @@ export default {
 
 .ejpl-three {
   width: 200px;
+  span{
+
+  }
 }
 .ejpl-buttom {
   width: 376px;
@@ -518,6 +538,9 @@ export default {
   font-size: 18px;
   font-style: normal;
   margin: 0;
+    span{
+    font-size: 12px;
+  }
 }
 .ejpl-three h4 {
   font-size: 18px;

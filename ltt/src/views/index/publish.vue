@@ -30,13 +30,13 @@
 </template>
 
 <script>
-import ny7 from "../7ny/7ny";
 import { Form, Toast } from "vant";
 import buttom from "../index/buttom.vue";
+
+import { mapActions } from "vuex";
 export default {
   components: {
     buttom,
-    ny7,
   },
 
   data() {
@@ -62,7 +62,11 @@ export default {
       res: [],
     };
   },
+  computed: {
+    // ...mapState([]),
+  },
   methods: {
+    ...mapActions(["upload"]),
     onSelect(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
@@ -72,6 +76,7 @@ export default {
       this.show = false;
       Toast(item.name);
     },
+    // 上传图片
     async upload(fileList) {
       let imageSrc = [];
       if (!this.fileList || this.fileList == []) {
@@ -88,13 +93,14 @@ export default {
             .toString(36)
             .slice(2)}.${type}`;
           await this.axios.post("/upload/token").then((res) => {
-            // console.log(res.data.token);
-            this.tokens = res.data.token;
+            console.log(res.data.token);
+            this.$store.state.tokens = res.data.token;
+            console.log(this.$store.state.tokens);
           });
-          // let { token } = await this.axios.post("/upload/token");
+
           const formdata = new FormData();
           formdata.append("file", file);
-          formdata.append("token", this.tokens);
+          formdata.append("token", this.$store.state.tokens);
           formdata.append("key", file_name);
           await this.axios
             .post("https://upload-z1.qiniup.com", formdata)
@@ -111,8 +117,8 @@ export default {
       return imageSrc;
     }, //上传图片
     async fb() {
-      let { title, content, fileList } = this;
-      let res = await this.upload(fileList);
+      let { title, content, fileList, upload } = this;
+      let res = await upload(fileList);
       console.log(res);
       this.axios
         .post("/api/add_article", {
