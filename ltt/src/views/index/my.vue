@@ -62,6 +62,7 @@
   </div>
 </template>
 <script>
+
 import buttom from "../index/buttom.vue";
 export default {
   components: {
@@ -84,9 +85,8 @@ export default {
     },
 
     tcdl() {
-      localStorage.setItem("username", "");
-      localStorage.setItem("tokenID", "");
-      localStorage.setItem("uid", "");
+
+      localStorage.clear();
       this.$router.go(0);
     },
   },
@@ -103,10 +103,10 @@ export default {
         token: localStorage.getItem("tokenID"),
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         this.fbhz = res.data;
         this.getuserInfo = res.data.userInfo;
-        console.log(this.getuserInfo);
+        // console.log(this.getuserInfo);
       });
   },
 };

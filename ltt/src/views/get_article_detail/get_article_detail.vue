@@ -2,6 +2,7 @@
   <div class="detail">
     <div class="detail-top"><go></go><van-nav-bar title="文章详情" /></div>
     <!-- 文章详情 -->
+<van-skeleton title avatar :row="3" :loading="loading" >
     <div class="detail-tow">
       <h4>{{ wzxq.title }}</h4>
     </div>
@@ -42,6 +43,7 @@
         </div>
         <!-- 点击回复出现 -->
       </div>
+      
       <div>
         <van-popup
           v-model="EJPL"
@@ -114,6 +116,7 @@
           <!-- 二级评论评论内容 -->
         </van-popup>
       </div>
+      
       <!-- 二级评论 -->
       <div class="detail-five-right">
         <div class="detail-five-right-left"></div>
@@ -127,6 +130,7 @@
         </div>
       </div>
     </div>
+    </van-skeleton>
     <!-- 评论详情 -->
     <div class="detail-six">
       <div class="detail-six-list">
@@ -149,10 +153,14 @@
         <van-icon name="share" />
       </div>
     </div>
+  
     <!-- 最下面 -->
   </div>
 </template>
 <script>
+import Vue from 'vue';
+import { Skeleton } from 'vant';
+Vue.use(Skeleton);
 import go from "../go/go";
 export default {
   components: {
@@ -160,6 +168,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       sms: "", //二级评论内容
       ejplhf: "",
       EJPL: false,
@@ -465,6 +474,7 @@ this.value=''
         this.is_like = res.data.data.is_like;
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
+            this.loading = false;
         // console.log(res.data);
         // console.log(this.wzxq);
       });

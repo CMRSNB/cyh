@@ -85,7 +85,7 @@ const routes = [
 
     component: () =>
       import(
-        /* webpackChunkName: "about" */ "../views/editUserInfo/editUserInfo.vue"
+        /* webpackChunkName: "about" */ "../views/editUserInfo/shiyan.vue"
       ),
     meta: {
       needLogin: true, //需要加校检判断的路由

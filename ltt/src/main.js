@@ -4,34 +4,23 @@ import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
-import Axios from "axios";
-router.beforeEach(function (to, from, next) {
-  if (to.meta.needlogin) {
-    //页面是否需要登录
-    if (localStorage.getItem(tokenID)) {
-      // 本地储存是否有tokenID数据;
-      next(); //表示已经登录
-    } else {
-      next({ name: "login" });
-    }
-  } else {
-    //表示不需要登录
-    next(); //继续往后走
-  }
-});
-Vue.config.productionTip = false;
-// // 请求拦截
+import axios from "axios";
+
+Vue.config.productionTip = false;//阻止生产提示
+
+// 请求拦截
 // axios.interceptors.request.use((res) => {
 //   console.log(res);
 //   return res;
 // });
 
-// 相应拦截
-// axios.interceptors.response.use((res) => {
-//   console.log(res);
-//   return res.data;
-// });
+// 响应拦截
+//  axios.interceptors.response.use((res) => {
 
+//   console.log(res);
+//   return res.data.data;
+// });
+// 路由简化
 axios.defaults.baseURL =
   "https://d33a5037-6c63-4e92-8bb1-30018ab701ea.bspapp.com/http";
 import {

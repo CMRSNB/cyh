@@ -48,6 +48,8 @@
 import go from "../go/go.vue";
 import { Toast } from "vant";
 import { Dialog } from "vant";
+import {mapActions} from 'vuex'
+
 export default {
   data() {
     return {
@@ -67,63 +69,19 @@ export default {
     go: go,
   },
   methods: {
-            // 上传图片
-    async upload(fileList) {
-      let imageSrc = [];
-      if (!this.fileList || this.fileList == []) {
-        return imageSrc;
-      }
-      // console.log(fileList);
-      let task = await fileList.map((v) => {
-        return new Promise(async (resolve, reject) => {
-          let { file } = v;
-          let { type } = file;
-          type = type.split("/")[1];
-          // 重新命名
-          let file_name = `${new Date().getTime()}_${Math.random()
-            .toString(36)
-            .slice(2)}.${type}`;
-          await this.axios.post("/upload/token").then((res) => {
-            console.log(res.data.token);
-            this.$store.state.tokens = res.data.token;
-            console.log(this.$store.state.tokens);
-          });
+...mapActions(['upload']),
 
-          const formdata = new FormData();
-          formdata.append("file", file);
-          formdata.append("token", this.$store.state.tokens);
-          formdata.append("key", file_name);
-          await this.axios
-            .post("https://upload-z1.qiniup.com", formdata)
-            .then((res) => {
-              // console.log(res);
-              // console.log(`http://toutiao.longxiaokj.com/` + res.data.key);
-              resolve(`http://toutiao.longxiaokj.com/` + res.data.key);
-            });
-          // console.log(result);
-        });
-      });
-      imageSrc = await Promise.all(task);
-      // console.log(imageSrc);
-      return imageSrc;
-    }, //上传图片
    async change(e) {
-      // console.log(11);
-      // console.log(e);
+
 // 转bas64
-      console.log(e.target.files[0]);//二进制
+      // console.log(e.target.files[0]);//二进制
 let fileReader = new FileReader();
 fileReader.readAsDataURL(e.target.files[0])
     fileReader.onload = (e) => {
-       console.log(e.target.result); 
-
-       
+       this.fileList= e.target.result;
+               let res = e.target.result;
       };
-  // this.fileList.push(e)
-  // let img=  await this.upload(fileList)
-  //   console.log(img);
     },
-
     afterRead(file) {
       // 此时可以自行将文件上传至服务器
       console.log(file);
@@ -137,13 +95,11 @@ fileReader.readAsDataURL(e.target.files[0])
       console.log(this.formatDate(date));
       console.log(this.date);
     },
-
    async qd() {
-   let img=  await  this.upload(fileList)
+console.log(res);
       this.axios
         .post("/user/editUserInfo", {
-          avatar:
-            img,
+          avatar:res,
           nickname: this.username,
           sex: this.sex,
           birthday: this.date,

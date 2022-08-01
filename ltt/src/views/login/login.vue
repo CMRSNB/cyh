@@ -5,7 +5,7 @@
       <van-form @submit="onSubmit">
         <van-field
           v-model="username"
-          name="用户名"
+          name="username"
           label="用户名"
           placeholder="用户名"
           :rules="[{ required: true, message: '请填写用户名' }]"
@@ -13,7 +13,7 @@
         <van-field
           v-model="password"
           type="password"
-          name="密码"
+          name="password"
           label="密码"
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
@@ -34,7 +34,7 @@
 <script>
 import { Toast } from "vant";
 import dlzctb from "../dlzctb/dlzctb";
-
+import  {login}from '@/API/user'
 export default {
   components: {
     dlzctb,
@@ -54,28 +54,34 @@ export default {
       Toast("按钮");
     },
     onSubmit(values) {
-      // console.log(values);
-      this.axios
-        .post("/user/login", {
-          username: this.username,
-          password: this.password,
-        })
+      console.log('submit', values);
+        login(values)
         .then((result) => {
-          Toast(result.data.msg);
-          console.log(result);
-          console.log(result.data);
-          if (result.data.code == "0") {
+          Toast(result.msg);
+          if (result.code == "0") {
             this.$router.push("/");
-            let { username, token, uid } = result.data;
+            let { username, token, uid,userInfo } = result;
+            localStorage.userInfo =JSON.stringify(userInfo) ;
+
+            console.log(userInfo);
             localStorage.username = username;
             localStorage.tokenID = token;
-            localStorage.uid = result.data.uid;
-            this.$store.commit("change", { key: "uid", value: uid });
-            this.$store.commit("change", {
+            localStorage.uid = uid;
+               this.$store.commit("change", {
+              key: "userInfo",
+              value: userInfo,
+            });
+                    this.$store.commit("change", {
+              key: "token",
+              value: token,
+            });
+                    this.$store.commit("change", {
+              key: "uid",
+              value: uid,
+            });        this.$store.commit("change", {
               key: "username",
               value: username,
             });
-            this.$store.commit("change", { key: "token", value: token });
             this.$store.commit("change", {
               key: "isLogin",
               value: true,
@@ -84,7 +90,7 @@ export default {
         });
     },
   },
-  mounted() {},
+
 };
 </script>
 <style lang="less">
