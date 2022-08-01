@@ -1,6 +1,7 @@
 <template>
   <div class="forget">
     <div class="forget-top">
+      <go></go>
       <van-nav-bar title="修改密码" />
     </div>
     <div>
@@ -15,8 +16,7 @@
         />
         <van-field
           v-model="newPassword"
-          type="newPassword"
-          name="新密码"
+          type="newPassword"        name="新密码"
           label="新密码"
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
@@ -31,7 +31,12 @@
   </div>
 </template>
 <script>
+import go from "../go/go";
+
 export default {
+    components: {
+    go: go,
+  },
   data() {
     return {
       //   username: "",

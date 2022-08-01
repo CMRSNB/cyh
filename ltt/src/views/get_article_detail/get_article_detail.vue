@@ -25,7 +25,6 @@
       </p>
     </div>
     <!-- 文章信息 -->
-
     <div class="detail-five" v-for="(v, i) in pllb" :key="i">
       <div class="detail-five-list">
         <div class="detail-five-list-list">
@@ -153,7 +152,6 @@
     <!-- 最下面 -->
   </div>
 </template>
-
 <script>
 import go from "../go/go";
 export default {

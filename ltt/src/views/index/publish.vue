@@ -87,6 +87,7 @@ export default {
         return new Promise(async (resolve, reject) => {
           let { file } = v;
           let { type } = file;
+          console.log(type);
           type = type.split("/")[1];
           // 重新命名
           let file_name = `${new Date().getTime()}_${Math.random()
@@ -97,7 +98,6 @@ export default {
             this.$store.state.tokens = res.data.token;
             console.log(this.$store.state.tokens);
           });
-
           const formdata = new FormData();
           formdata.append("file", file);
           formdata.append("token", this.$store.state.tokens);
@@ -120,25 +120,25 @@ export default {
       let { title, content, fileList, upload } = this;
       let res = await upload(fileList);
       console.log(res);
-      this.axios
-        .post("/api/add_article", {
-          title, //标题
-          content, //内容
-          cate_name: this.fbmk.name, //分类名字
-          cate_id: this.fbmk.id, //分类ID
-          author: title, //发布者名字
-          author_id: localStorage.getItem("uid"),
-          imageSrc: res,
-        })
-        .then((result) => {
-          console.log(result);
-          this.$toast(result.data.msg);
-          if (result.data.code == 0) {
-            this.title = "";
-           this.content = ""; //发布内容
-           this.fileList = []; //图片数组
-          }
-        });
+      // this.axios
+      //   .post("/api/add_article", {
+      //     title, //标题
+      //     content, //内容
+      //     cate_name: this.fbmk.name, //分类名字
+      //     cate_id: this.fbmk.id, //分类ID
+      //     author: title, //发布者名字
+      //     author_id: localStorage.getItem("uid"),
+      //     imageSrc: res,
+      //   })
+      //   .then((result) => {
+      //     console.log(result);
+      //     this.$toast(result.data.msg);
+      //     if (result.data.code == 0) {
+      //       this.title = "";
+      //      this.content = ""; //发布内容
+      //      this.fileList = []; //图片数组
+      //     }
+      //   });
     }, //点击提交
   },
   beforeCreate() {

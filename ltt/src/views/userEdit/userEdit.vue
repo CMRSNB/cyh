@@ -109,8 +109,17 @@ export default {
     }, //上传图片
    async change(e) {
       // console.log(11);
-      console.log(e);
-  this.fileList.push(e)
+      // console.log(e);
+// 转bas64
+      console.log(e.target.files[0]);//二进制
+let fileReader = new FileReader();
+fileReader.readAsDataURL(e.target.files[0])
+    fileReader.onload = (e) => {
+       console.log(e.target.result); 
+
+       
+      };
+  // this.fileList.push(e)
   // let img=  await this.upload(fileList)
   //   console.log(img);
     },

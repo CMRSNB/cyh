@@ -32,17 +32,15 @@ export default new Vuex.Store({
         return new Promise(async (resolve, reject) => {
           let { file } = v;
           let { type } = file;
+          
           type = type.split("/")[1];
           // 重新命名
-          let file_name = `${new Date().getTime()}_${Math.random()
-            .toString(36)
-            .slice(2)}.${type}`;
+          let file_name = `${new Date().getTime()}_${Math.random().toString(36).slice(2)}.${type}`;
           await this.axios.post("/upload/token").then((res) => {
             console.log(res.data.token);
             this.$store.state.tokens = res.data.token;
             console.log(this.$store.state.tokens);
           });
-
           const formdata = new FormData();
           formdata.append("file", file);
           formdata.append("token", this.$store.state.tokens);

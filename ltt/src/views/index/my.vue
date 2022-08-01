@@ -106,7 +106,7 @@ export default {
         console.log(res.data);
         this.fbhz = res.data;
         this.getuserInfo = res.data.userInfo;
-        // console.log(this.getuserInfo);
+        console.log(this.getuserInfo);
       });
   },
 };
