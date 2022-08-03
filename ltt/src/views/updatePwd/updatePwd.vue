@@ -32,10 +32,14 @@
 </template>
 <script>
 import go from "../go/go";
+import {mapActions} from "vuex";
 
 export default {
     components: {
     go: go,
+  },
+  computed:{
+...mapActions(['isLogin'])
   },
   data() {
     return {
@@ -54,9 +58,14 @@ export default {
           uid: localStorage.uid,
         })
         .then((result) => {
-          // Toast("result.data.msg");
-          console.log(result);
-          this.$router.push("/login");
+          this.$toast(result.data.msg);
+if(result.data.code==0){
+        this.$store.commit("change", {
+              key: "isLogin",
+              value: false,
+            });
+          this.$router.push("/my");
+}
         });
     },
   },

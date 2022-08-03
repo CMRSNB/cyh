@@ -1,26 +1,7 @@
 <template>
-  <div class="home">
-    <div class="home-one">
-      <span @click="search"
-        ><em><van-icon name="search" /></em>搜索</span
-      >
-    </div>
-    <!-- 搜索 -->
-    <div class="home-tow">
-      <van-tabs @click="home">
-        <van-tab
-          v-for="(value, index) in hqfl"
-          :title="value.name"
-          :key="index"
-        >
-        </van-tab>
-      </van-tabs>
-    </div>
-    <van-pull-refresh
-      v-model="isLoading"
-      @refresh="onRefresh()"
-      success-text="刷新成功"
-    >
+<div class="dz">
+    <div><go></go> <van-nav-bar title="我的发布" /></div>
+    <div>
       <van-list
         v-model="loading"
         :finished="finished"
@@ -32,14 +13,20 @@
             v-for="(v, i) in wzlb"
             :key="i"
             class="home-three"
-            @click="vixq(v)"
+            @click="vixq(v,i)"
           >
             <div class="home-three-top">
-              <h3>{{ v.title }}</h3>
+              <h3>{{ wzlb[i].title }}</h3>
+                      <em @click.stop="scfb(v,i)">X</em>
             </div>
             <div class="home-three-tow">
-              <span>作者：{{ v.author }}</span>
+              <span>作者：{{  wzlb[i].author }}</span> 
             </div>
+         
+           
+        
+         
+          
             <div
               :class="{
                 img2: v.poster_type == 2,
@@ -48,7 +35,6 @@
             >
               <van-image
                 v-for="(value, index) in v.imageSrc"
-            lazy-load
                 :src="value"
                 :key="index"
               >
@@ -61,41 +47,53 @@
           </div>
         </div>
       </van-list>
-    </van-pull-refresh>
-  <buttom></buttom>
-  </div>
+   
+</div>
+
+
+</div>
+   
 </template>
+
 <script>
-import buttom from "../index/buttom.vue";
-import Vue from 'vue';
-import { Image as VanImage } from 'vant';
-Vue.use(VanImage);
-import { Lazyload } from 'vant';
-Vue.use(Lazyload);
+function beforeClose(action, done) {
+  if (action === 'confirm') {
+    setTimeout(done, 1000);
+  } else {
+    done();
+  }
+}
+import go from'../go/go.vue'
+import {wdfb,shfb} from '@/API/user'
+import { mapState } from 'vuex'
+import { Dialog } from 'vant';
 export default {
-  components: {
-    buttom,
-  },
-  data() {
-    return {
-      loading: false,
+    data() {
+        return {
+       loading: false,
       finished: false,
-      count: 0,
       isLoading: false,
       value: "",
-      hqfl: [], //获取分类
+      
       wzlb: [], //第一个文章列表
       hqflID: [], //获取id
       index: 0,
-      count: 0,
       counts: 0,
-    };
-  },
-  methods: {
-    search() {
-      this.$router.push("/search");
-    },//搜索
-    // 时间戳：1637244864707
+      count: 0,
+
+        }
+    },
+components:{
+    go,
+        [Dialog.Component.name]: Dialog.Component,
+}
+,
+computed:{
+...mapState(['uid'])
+},
+methods: {
+    
+        // 时间戳：1637244864707
     /* 时间戳转换为时间 */
     timestampToTime(timestamp) {
       timestamp = timestamp ? timestamp : null;
@@ -116,46 +114,63 @@ export default {
         date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
       return Y + M + D;
     },
-    onLoad() {
+
+scfb(v,i){
+console.log(v);
+let {_id}=v
+let {uid}=this
+
+
+Dialog.confirm({
+        title: '提醒',
+        message: '是否要删除',
+   beforeClose,
+      }).then(() => {
+shfb({_id,uid}).then((res)=>{ 
+    console.log(res);
+    console.log(this.wzlb);
+    this.wzlb.splice(i,1)
+})
+      });
+   
+
+
+
+
+
+
+},//删除发布
+
+    onLoad(flag) {
+      console.log(flag);
+      let{uid}=this
+          wdfb({uid,limit: 10,}).then((res)=>{
+    console.log(res.data)
+
+})
       setTimeout(() => {
-        this.count += 10;
+let {uid}=this
+      this.count += 10;
+      console.log(this.count);
         if (this.refreshing) {
           this.wzlb = [];
           this.refreshing = false;
-        }
-          this.axios
-            .post("/api/get_article_list", {
-              cate_id: this.hqflID[this.index]._id,
-              skip: this.count,
-              limit: 10,
-            })
-            .then((res) => {
-              this.wzlb.push(...res.data.data);
-            });
+        }   
+       
+
+          wdfb({uid,limit: 10,skip:this.count}).then((res)=>{  
+            // console.log( this.count);
+            // console.log(res.count);           
+                // console.log(res.data);
+ this.wzlb.push(...res.data);
+}) 
         this.loading = false;
-        if (this.wzlb.length >= this.counts * 10) {
+        if (this.wzlb.length >= this.counts) {
           this.finished = true;
         }
       }, 1000);
     }, //底部刷新
-    onRefresh() {
-      setTimeout(() => {
-        this.isLoading = false;
-        this.count++;
-        this.axios
-          .post("/api/get_article_list", {
-            cate_id: this.hqflID[this.index]._id,
-            skip: "0",
-            limit: "10",
-          })
-          .then((res) => {
-            // console.log(res.data.data);
-            // console.log(res.data.data[index].author_id);
-            this.wzlb = res.data.data;
-          });
-      }, 1000);
-    }, //上拉刷新
-    vixq(v) {
+         vixq(v) {
       // console.log(v);
       this.$router.push({
         path: "/getArticleDetail",
@@ -163,53 +178,50 @@ export default {
           authorID: v._id,
         },
       });
-    }, //点击跳转详情页
-    home(index) {
-      this.index = index;
+    }, //点击跳转详情页     
+},
 
-      this.axios
-        .post("/api/get_article_list", {
-          cate_id: this.hqflID[index]._id,
-          skip: "0",
-          limit: "10",
-        })
-        .then((res) => {
-          // console.log(res.data);
-          // console.log(res.data.data[index].author_id);
-          this.wzlb = res.data.data;
-          this.count = 0;
-          this.counts = res.data.count - 0;
-          Math.floor(this.counts);
-          // console.log(Math.ceil(this.counts));
-          // console.log(this.wzlb);
-        });
-    },
-  }, //接受索引点击哪一个得到哪一个的文章列表
-  mounted() {
-    this.axios.post("/api/get_cate_list").then((res) => {
-      // console.log(res.data.data);
-      this.hqfl = res.data.data;
-      // console.log(this.hqfl[3]._id);
-      this.hqflID = res.data.data;
-      // console.log(this.hqflID);
-      this.axios
-        .post("/api/get_article_list", {
-          cate_id: this.hqfl[0]._id,
-          skip: "0",
-          limit: "10",
-        })
-        .then((res) => {
-          this.wzlb = res.data.data;
-          console.log(res.data);
-          // console.log(res.data.count);
-          this.counts = parseInt(res.data.count / 10);
-   
-        });
-    });
-  },
-};
+mounted() {
+
+let {uid}=this
+wdfb({uid}).then((res)=>{
+    // console.log(res.data.title)
+    console.log(res);
+    this.counts=res.count
+   this.wzlb= res.data
+})
+ 
+},
+
+}
 </script>
+
 <style lang="less" scoped>
+.dz{
+ min-width: 375px;  
+}
+
+.home-three-top{
+    h3{
+        width: 340px;
+    }
+    em{
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 2px solid #000;
+line-height: 30px;
+text-align:center ;
+     float: right;
+        margin-right: 10px;
+        font-weight: bolder ;
+        margin-bottom: 10px;
+    }
+}
+
+
+
 .home-tow .van-tabs__nav .van-tabs__line{
 background-color: #ccc;
 }
@@ -233,7 +245,7 @@ border-right: none
     display: inline-block;
     width: 300px;
     height: 35px;
-    background-color: #72e0ac;
+    background-color: rgb(6, 220, 102);
     border-radius: 20px;
     font-size: 18px;
     color: rgb(255, 255, 255);
@@ -254,7 +266,6 @@ border-right: none
 .img3 {
   display: flex;
   justify-content: space-around;
-
 }
 .img3 .van-image {
   width: 30%;
@@ -288,16 +299,17 @@ border-right: none
   font-style: normal;
   padding-left: 10px;
 }
+
 .home-three-tow{
-  margin:4px 10px;
+    em{
+    
+    }
 }
 .home-three-tow span {
-  display: inline-block;
   font-size: 12px;
+  padding-left: 10px;
 }
-.home-three-for{
-margin: 4px 0;
-}
+
 .home-three-for span {
   font-size: 12px;
   padding-left: 10px;

@@ -28,7 +28,7 @@
           <template #button>
             <van-button
               size="small"
-              type="primary"
+            type="default"
               @click="fsyzm"
               native-type="button"
               :disabled="YZMjy"
@@ -37,15 +37,15 @@
           </template>
         </van-field>
         <div style="margin: 16px">
-          <van-button round block type="info" native-type="submit">
+          <van-button round block type="default" native-type="submit">
             {{ this.ZC }}
             <!-- <van-loading type="spinner"  /> -->
           </van-button>
         </div>
       </van-form>
     </div>
-    <h1>{{ $store.state.a }}</h1>
-    <button @click="$store.commit('change', $store.state.a + 1)">按钮</button>
+    <!-- <h1>{{ $store.state.a }}</h1>
+    <button @click="$store.commit('change', $store.state.a + 1)">按钮</button> -->
   </div>
 </template>
 <script>

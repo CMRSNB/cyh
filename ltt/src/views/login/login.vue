@@ -23,7 +23,7 @@
         </div>
 
         <div style="margin: 16px">
-          <van-button round block type="info" native-type="submit"
+          <van-button round block type="default" native-type="submit"
             >登录</van-button
           >
         </div>
@@ -58,14 +58,16 @@ export default {
         login(values)
         .then((result) => {
           Toast(result.msg);
+          console.log(result);
           if (result.code == "0") {
             this.$router.push("/");
-            let { username, token, uid,userInfo } = result;
+            let { username, token, uid,userInfo ,tokenExpired } = result;
             localStorage.userInfo =JSON.stringify(userInfo) ;
 
             console.log(userInfo);
+            localStorage.setItem("tokenExpired",tokenExpired)
             localStorage.username = username;
-            localStorage.tokenID = token;
+            localStorage.token = token;
             localStorage.uid = uid;
                this.$store.commit("change", {
               key: "userInfo",
@@ -74,7 +76,7 @@ export default {
                     this.$store.commit("change", {
               key: "token",
               value: token,
-            });
+            }); 
                     this.$store.commit("change", {
               key: "uid",
               value: uid,

@@ -1,15 +1,11 @@
 <template>
-  <h2>
-          {{ $store.state.isLogin }}
-
-          {{ $store.state.tokenID }}
-          {{ $store.state.uid }}
-          {{ $store.state.username }}
-
-
-
-
-  </h2>
+<div>
+  <h4>editUserInfo</h4>
+  <h2>1{{ $store.state.isLogin }}</h2>
+  <h3>2{{ $store.state.username}}</h3>     
+  <h3>3{{ $store.state.uid }}</h3>
+  <h3>4{{ $store.state.token }}</h3>
+  </div>
 </template>
 <script>
 export default {

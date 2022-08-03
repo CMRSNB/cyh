@@ -4,7 +4,8 @@
     <div class="userEdit-tow">
       <van-cell title="头像" is-link value="内容">
         <label for="tx"
-          ><img :src="fileList" alt="" />
+          >
+          <img :src="userInfo.avatar" alt="" />
         </label>
         <!-- 点击lable标签触发input事件 -->
         <input
@@ -17,9 +18,9 @@
         />
       </van-cell>
       <van-cell-group>
-        <van-field v-model="username" label="昵称" placeholder="请输入用户名" />
+        <van-field v-model="username" label="昵称:" placeholder="请输入用户名" />
       </van-cell-group>
-      <van-cell title="生日" :value="date" @click="show = true" is-link />
+      <van-cell title="生日:" :value="date" @click="show = true" is-link />
       <van-calendar
         v-model="show"
         color="#07c160"
@@ -27,7 +28,7 @@
         :max-date="maxDate"
         @confirm="onConfirm"
       />
-      <van-cell title="性别" :value="sex" @click="showw = true" is-link />
+      <van-cell title="性别:" :value="sex" @click="showw = true" is-link />
       <van-action-sheet
         v-model="showw"
         :actions="actions"
@@ -45,15 +46,16 @@
   </div>
 </template>
 <script>
+
 import go from "../go/go.vue";
 import { Toast } from "vant";
 import { Dialog } from "vant";
-import {mapActions} from 'vuex'
-
+import {mapActions,mapState} from 'vuex'
+import {editUserInfo,getuserInfo} from '@/API/user.js'
 export default {
   data() {
     return {
-      username: "",
+      username:'',
       showww: false,
       showw: false,
       actions: [{ name: "男" }, { name: "女" }],
@@ -62,24 +64,36 @@ export default {
       sex: "男",
       minDate: new Date(2000, 0, 1),
       maxDate: new Date(2093, 0, 31),
-      fileList:[]
+      userInfo:[]
     };
   },
   components: {
     go: go,
   },
+computed:{
+...mapState(['uid'])
+},
+   watch: {
+    //  数据无污染  刷新后也能拿到
+    "$store.state.userInfo": {
+      immediate: true, //  初始化后立刻进行监听
+      handler(n, o) {
+        this.userInfo = JSON.parse(JSON.stringify(n));
+        // console.log(this.userInfo);
+      },
+    },
+  },
   methods: {
 ...mapActions(['upload']),
-
    async change(e) {
-
-// 转bas64
-      // console.log(e.target.files[0]);//二进制
+      let file = e.target.files[0]; //  二进制
 let fileReader = new FileReader();
-fileReader.readAsDataURL(e.target.files[0])
+      this.userInfo.file = file;
+fileReader.readAsDataURL(file)
     fileReader.onload = (e) => {
-       this.fileList= e.target.result;
-               let res = e.target.result;
+      // console.log(e.target.result);
+      this.userInfo.avatar= e.target.result;
+      // console.log(this.userInfo.avatar);
       };
     },
     afterRead(file) {
@@ -93,50 +107,57 @@ fileReader.readAsDataURL(e.target.files[0])
       this.show = false;
       this.date = this.formatDate(date);
       console.log(this.formatDate(date));
-      console.log(this.date);
+      // console.log(this.date);
     },
    async qd() {
-console.log(res);
-      this.axios
-        .post("/user/editUserInfo", {
-          avatar:res,
-          nickname: this.username,
-          sex: this.sex,
-          birthday: this.date,
-          uid: localStorage.getItem("uid"),
+// console.log(this.userInfo.avatar);
+// console.log(this.userInfo);
+let {file}=this.userInfo
+if(file){
+  console.log(111);
+   let fileList = [
+          {
+            file,
+          },
+        ];
+          let res = await this.upload(fileList);
+       let avatar = res[0];
+let {sex,uid}=this
+        editUserInfo({
+         avatar,
+  nickname: this.username,
+ sex,
+      birthday: this.date,
+       uid
+        }).then((res)=>{
+          console.log(111);
+          console.log(res);
+          this.$toast(res.msg);
+if(res.code==0){
+this.userInfo.nickname= this.username
+// 本地修改
+       this.$store.commit("change", {
+              key: "userInfo",
+              value: this.userInfo,
+            });
+console.log(this.userInfo);
+this.$router.push('/my')
+}
         })
-        .then((res) => {
-          // console.log(res.data);
-          this.$toast(res.data.msg);
-        });
+}
     },
     nc() {
       this.showww = true;
     },
     Sex(item) {
-      console.log(item);
+      // console.log(item);
       this.sex = item.name;
     },
     onCancel() {
       Toast("取消");
     },
   },
-mounted() {
-    this.axios
-      .post("/user/getuserInfo", {
-        token: localStorage.getItem("tokenID"),
-      })
-      .then((res) => {
-        // console.log(res.data.userInfo.avatar);
-this.fileList=res.data.userInfo.avatar
-        // console.log(this.getuserInfo);
-      });
-
-
-
-},
-
-
+   
 };
 </script>
 <style>

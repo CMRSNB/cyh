@@ -3,26 +3,10 @@ import "./plugins/axios";
 import App from "./App.vue";
 import "./registerServiceWorker";
 import router from "./router";
+import init from"./API/init"
 import store from "./store";
-import axios from "axios";
 
 Vue.config.productionTip = false;//阻止生产提示
-
-// 请求拦截
-// axios.interceptors.request.use((res) => {
-//   console.log(res);
-//   return res;
-// });
-
-// 响应拦截
-//  axios.interceptors.response.use((res) => {
-
-//   console.log(res);
-//   return res.data.data;
-// });
-// 路由简化
-axios.defaults.baseURL =
-  "https://d33a5037-6c63-4e92-8bb1-30018ab701ea.bspapp.com/http";
 import {
   Tabbar,
   TabbarItem,
@@ -51,6 +35,7 @@ import {
   Overlay,
   Loading,
   Image as VanImage,
+
 } from "vant";
 
 Vue.use(VanImage);
@@ -79,8 +64,12 @@ Vue.use(Search);
 Vue.use(Tabbar);
 Vue.use(NavBar);
 Vue.use(TabbarItem);
+init().then((res=>{
 new Vue({
   router,
-  store,
+  store, 
   render: (h) => h(App),
 }).$mount("#app");
+})).catch(err=>{
+  console.log(err);
+})

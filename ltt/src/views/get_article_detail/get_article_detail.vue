@@ -43,14 +43,12 @@
         </div>
         <!-- 点击回复出现 -->
       </div>
-      
       <div>
         <van-popup
           v-model="EJPL"
           position="bottom"
           closeable
           :style="{ height: '100%' }"
-
         >
           <div class="ejpl-top"><h3>回复</h3></div>
           <!-- 二级评论上面回复 -->
@@ -76,8 +74,8 @@
             </div>
           </div>
           <!-- 二级评论评论人详情 -->
-          <div class="ejplpllb">
-            <div class="ejpl" v-for="(value, index) in ejplllb" :key="index" @click="sanjiplun(value, index)">
+          <div class="ejplpllb" v-if="EJPL">
+            <div class="ejpl" v-for="(value, index) in ejplllb"  @click="sanjiplun(value, index)" :key="index">
               <div class="ejpl-left">
                 <div>
                   <img :src="value.info.avatar" alt="" />
@@ -116,7 +114,6 @@
           <!-- 二级评论评论内容 -->
         </van-popup>
       </div>
-      
       <!-- 二级评论 -->
       <div class="detail-five-right">
         <div class="detail-five-right-left"></div>
@@ -150,17 +147,25 @@
           @click="wzdz"
           :style="{ color: is_like ? 'red' : '#ccc' }"
         />
-        <van-icon name="share" />
+        <van-icon name="share"  @click="fxmb" />
       </div>
     </div>
-  
+    <!-- 最下满的内容 -->
+  <van-share-sheet
+  v-model="showShare"
+  title="立即分享给好友"
+  :options="options"
+/>
+<!-- 分享面板内容 -->
     <!-- 最下面 -->
   </div>
 </template>
 <script>
 import Vue from 'vue';
-import { Skeleton } from 'vant';
+import { Skeleton,Lazyload,ShareSheet } from 'vant';
+Vue.use(ShareSheet);
 Vue.use(Skeleton);
+Vue.use(Lazyload);
 import go from "../go/go";
 export default {
   components: {
@@ -168,16 +173,17 @@ export default {
   },
   data() {
     return {
+      key:1,//key值可以监听二级评论的刷新
       loading: true,
       sms: "", //二级评论内容
       ejplhf: "",
-      EJPL: false,
+      EJPL: false,//控制二级评论的显示与隐藏
       show: false,
       HF: "",
       message: "",
       SHOW: false,
       value: "",
-      authorID: "",
+      authorID: "",//文章id
       wzxq: {},
       pllb: [], //评论列表
       sttus: 1,
@@ -188,10 +194,29 @@ export default {
       ejsy: 0, //点击回复出现传出的二级评论索引
       ejplllb: [], //二级评论列表
       ejisLINK: false, //二级评论点赞
-      sanjipinlu:'作者'
+      sanjipinlu:'作者',
+       showShare: false,//分享面板内容
+      options: [
+        [
+          { name: '微信', icon: 'wechat' },
+          { name: '朋友圈', icon: 'wechat-moments' },
+          { name: '微博', icon: 'weibo' },
+          { name: 'QQ', icon: 'qq' },
+        ],
+        [
+          { name: '复制链接', icon: 'link' },
+          { name: '分享海报', icon: 'poster' },
+          { name: '二维码', icon: 'qrcode' },
+          { name: '小程序码', icon: 'weapp-qrcode' },
+        ],
+      ],//分享面板内容
     };
   },
   methods: {
+fxmb(){
+// let {showShare}=this
+this.showShare=true
+},
     sanjiplun(value, index){
 console.log(index);
 console.log(value);
@@ -239,6 +264,7 @@ this.sanjipinlu=value.info.nickname
           })
           .then((res) => {
            if(res.data.code==0){
+this.pllb[this.ejsy].reply_num++
              this.sms=''
                console.log(res.data);
             this.axios
@@ -267,23 +293,25 @@ this.sanjipinlu=value.info.nickname
     }, //二级评论评论=>评论
     ejpll(v, i) {
       this.EJPL = !this.EJPL;
-      // console.log(i);
+      console.log(i);
       this.ejsy = i;
       console.log(this.ejsy);
-      // console.log(this.pllb[i]._id);
+      console.log(this.pllb[i]._id);
       this.axios
         .post("/api/get_reply_list", {
-          article_id: this.authorID,
           skip: 0,
           limit: 5,
-          reply_comment_id: this.pllb[this.ejsy]._id,
+          comment_type:1,
           user_id: localStorage.getItem("uid"),
+          reply_comment_id: this.pllb[i]._id,
+          article_id: this.authorID,
+
         })
         .then((res) => {
-          console.log(res.data.data);
+          console.log(res.data);
           this.ejplllb = res.data.data;
         });
-    }, //点击回复出现二级评论弹出框
+    },    //<!-- 点击回复出现二级评论 -->
     onSubmit(values) {
       this.axios
         .post("/api/add_comment", {

@@ -49,9 +49,7 @@ const routes = [
 
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/userEdit/userEdit.vue"),
-    meta: {
-      needLogin: true, //需要加校检判断的路由
-    },
+    
   }, //个人信息界面
   {
     path: "/updatePwd",
@@ -99,6 +97,46 @@ const routes = [
         /* webpackChunkName: "about" */ "../views/get_article_detail/get_article_detail.vue"
       ),
   }, //w文章详情界面
+    {
+    path: "/sc",
+    name: "sc",
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ "../views/scdzwz/sc.vue"
+      ),
+  }, //收藏文章
+      {
+    path: "/ls",
+    name: "ls",
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ "../views/scdzwz/lsjl.vue"
+      ),
+  }, //历史文章
+        {
+    path: "/lxwm",
+    name: "lxwm",
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ "../views/lxwmgywm/lxwm.vue"
+      ),
+  }, //联系我们
+        {
+    path: "/gywm",
+    name: "gywm",
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ "../views/lxwmgywm/gywm.vue"
+      ),
+  }, //关于我们
+          {
+    path: "/wdfb",
+    name: "wdfb",
+    component: () =>
+      import(
+        /* webpackChunkName: "about" */ "../views/wdfb/wdfb.vue"
+      ),
+  }, //我的发布
 ];
 
 const router = new VueRouter({

@@ -15,11 +15,20 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 left {
   float: left;
 }
 right {
   float: right;
 }
+body{
+ .van-dialog{
+position: fixed;
+top: 20px;
+left: 20px !important;
+z-index: 2003;
+}
+}
+
 </style>

@@ -27,38 +27,25 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
-        <div class="home-nr">
+        <div class="home-three">
           <div
             v-for="(v, i) in wzlb"
             :key="i"
             class="home-three"
             @click="vixq(v)"
           >
-            <div class="home-three-top">
-              <h3>{{ v.title }}</h3>
-            </div>
-            <div class="home-three-tow">
-              <span>作者：{{ v.author }}</span>
-            </div>
-            <div
-              :class="{
-                img2: v.poster_type == 2,
-                img3: v.poster_type == 3,
-              }"
-            >
-              <van-image
-                v-for="(value, index) in v.imageSrc"
-            lazy-load
-                :src="value"
-                :key="index"
-              >
-                <template v-slot:error>加载失败</template>
-              </van-image>
-            </div>
-            <div class="home-three-for">
-              <span> 日期：{{ timestampToTime(v.time) }} </span>
-            </div>
-          </div>
+<div class="home-three-one">
+<h3>{{v.title}}</h3>
+</div>
+<div class="home-three-tow">
+<span>作者：</span><i>{{v.author}}</i>
+</div>
+<div>
+
+
+  
+</div>
+</div>
         </div>
       </van-list>
     </van-pull-refresh>
@@ -67,17 +54,13 @@
 </template>
 <script>
 import buttom from "../index/buttom.vue";
-import Vue from 'vue';
-import { Image as VanImage } from 'vant';
-Vue.use(VanImage);
-import { Lazyload } from 'vant';
-Vue.use(Lazyload);
+import{getuserInfo} from'@/API/user.js'
 export default {
   components: {
     buttom,
   },
   data() {
-    return {
+    return { 
       loading: false,
       finished: false,
       count: 0,
@@ -123,6 +106,7 @@ export default {
           this.wzlb = [];
           this.refreshing = false;
         }
+        for (let i = 0; i < 10; i++) {
           this.axios
             .post("/api/get_article_list", {
               cate_id: this.hqflID[this.index]._id,
@@ -130,8 +114,10 @@ export default {
               limit: 10,
             })
             .then((res) => {
-              this.wzlb.push(...res.data.data);
+              this.wzlb.push(res.data.data[i]);
             });
+          // this.wzlb.push(this.list.length + 1);
+        }
         this.loading = false;
         if (this.wzlb.length >= this.counts * 10) {
           this.finished = true;
@@ -185,7 +171,7 @@ export default {
         });
     },
   }, //接受索引点击哪一个得到哪一个的文章列表
-  mounted() {
+mounted() {
     this.axios.post("/api/get_cate_list").then((res) => {
       // console.log(res.data.data);
       this.hqfl = res.data.data;
@@ -203,13 +189,62 @@ export default {
           console.log(res.data);
           // console.log(res.data.count);
           this.counts = parseInt(res.data.count / 10);
-   
+          // console.log(this.wzlb);
+          // console.log(res.data.count / 10);
+          // console.log(parseInt(res.data.count / 10));
+          // console.log(this.counts);
         });
     });
+
   },
+
 };
 </script>
 <style lang="less" scoped>
+// 文章详情样式
+.home-three{
+
+width: 360px;
+margin:  0 auto;
+// background-color: aqua;
+.home-three-one{
+width: 360px;
+h3{
+  width: 360px;
+  margin: 0;
+  color: #131313;
+  // height: 50px;
+ overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+}
+.home-three-tow{
+  span{
+    font-size: 12px;
+  color: #6a6a6a;
+  }
+  i{
+      font-size: 12px;
+  color: #6a6a6a;
+  }
+}
+
+}
+
+
+
+// 文章详情样式结束
+
+
+
+
+
+
+
+
 .home-tow .van-tabs__nav .van-tabs__line{
 background-color: #ccc;
 }
@@ -221,7 +256,6 @@ border-right: 2px solid #ccc;
 ::v-deep .van-tab:nth-child(7){
 border-right: none
 }
-
 .home-one {
   background-color: @color;
   height: 47.89px;
@@ -233,7 +267,7 @@ border-right: none
     display: inline-block;
     width: 300px;
     height: 35px;
-    background-color: #72e0ac;
+    background-color: rgb(6, 220, 102);
     border-radius: 20px;
     font-size: 18px;
     color: rgb(255, 255, 255);
@@ -242,64 +276,7 @@ border-right: none
     }
   }
 }
-.home-nr {
-  width: 375px;
-  margin-bottom: 50px;
-  margin-top: 20px;
-}
-.van-image__img {
-  width: none;
-  height: none;
-}
-.img3 {
-  display: flex;
-  justify-content: space-around;
 
-}
-.img3 .van-image {
-  width: 30%;
-  height: 100px;
-}
 
-.img2 {
-  width: 375px;
-  height: 250px;
-  // text-align: center;
-  display: flex;
-  justify-content: space-around;
-  margin: 0 auto;
-}
-.img2 .van-image {
-  width: 350px;
-  height: 250px;
-}
 
-.home-three {
-  width: 375px;
-  margin-bottom: 20px;
-}
-.home-three h3 {
-  margin: 0;
-  width: 200px;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-style: normal;
-  padding-left: 10px;
-}
-.home-three-tow{
-  margin:4px 10px;
-}
-.home-three-tow span {
-  display: inline-block;
-  font-size: 12px;
-}
-.home-three-for{
-margin: 4px 0;
-}
-.home-three-for span {
-  font-size: 12px;
-  padding-left: 10px;
-}
 </style>

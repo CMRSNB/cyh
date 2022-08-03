@@ -4,8 +4,13 @@ axios.defaults.baseURL =
 
 // 响应拦截
 axios.interceptors.response.use((res)=>{
-  console.log(res);
+  // console.log(res);
   return res.data
 })
+// 请求拦截
+// axios.interceptors.request.use((res) => {
+//   console.log(res);
+//   return res;
+// });
 
 export default axios;

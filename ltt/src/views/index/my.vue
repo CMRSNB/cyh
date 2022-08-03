@@ -1,16 +1,18 @@
 <template>
   <div class="my">
-    <div class="my-top" v-if="sfdl">
+    <div class="my-top" v-if="isLogin">
       <div class="my-top-top">
         <div class="my-top-top-lest">
           <!-- {{ $store.state.isLogin }} -->
-          <img :src="getuserInfo.avatar" alt="" />
-          <span> {{ getuserInfo.nickname }}</span>
+          <!-- {{userInfo}} -->
+          <img :src="userInfo.avatar" alt="" />
+          <span> {{ userInfo.nickname }}</span>
         </div>
         <div class="my-top-top-right" @click="bjzl">
-          <van-button type="primary" color="#ffffff" size="mini"
+          <van-button type="default" size="mini"
             >编辑资料</van-button
           >
+      
         </div>
       </div>
       <div class="my-top-tow">
@@ -37,81 +39,114 @@
     </div>
 
     <div class="my-tow">
-      <div class="my-tow-left">
+      <div class="my-tow-left" @click="sc">
         <span><van-icon name="star-o" color="#011627" /></span>
         <h4>收藏</h4>
       </div>
-      <div class="my-tow-right">
+      <div class="my-tow-right" @click="ls">
         <span><van-icon name="clock-o" color="#ffb980" /></span>
         <h4>历史</h4>
       </div>
     </div>
     <div class="my-three">
+      <van-cell title="我的发布" is-link @click="wdfb" />
+
       <van-cell title="修改密码" is-link @click="xhmm" />
-      <van-cell title="联系我们" is-link />
-      <van-cell title="关于我么" is-link />
+      <van-cell title="联系我们" is-link @click="lxwm" />
+      <van-cell title="关于我么" is-link @click="gywm"/>
     </div>
     <div class="my-for">
-      <van-button type="primary" size="large" @click.prevent="tcdl"
+      <van-button type="default" size="large" @click.prevent="tcdl"
+   
         >退出登录</van-button
       >
     </div>
     <!-- 退出登录 -->
-
     <buttom></buttom>
   </div>
 </template>
 <script>
-
+import { mapState } from 'vuex'
+import {mapMutations} from 'vuex'
+import {getuserInfo}from'../../API/user'
 import buttom from "../index/buttom.vue";
 export default {
   components: {
     buttom,
+
   },
   data() {
-    return {
+    return { 
       sfdl: "false",
-      getuserInfo: [], //用户信息
       fbhz: [],
       uid: "",
-    };
+    };username
   },
+computed:{
+...mapState(['userInfo','username','isLogin']),
+
+ ...mapState(['token'])
+
+},
   methods: {
+    wdfb(){
+
+      this.$router.push("/wdfb");
+
+    },//我的发布
+    lxwm(){
+      this.$router.push("/lxwm");
+    },//联系我们
+    gywm(){
+      this.$router.push("/gywm");
+    },//关于我们
+    sc(){
+      this.$router.push("/sc");
+    },//文章收藏
+    ls(){
+      this.$router.push("/ls");
+
+    },//文章历史
+    ...mapMutations(['clear']), 
     xhmm() {
       this.$router.push("/updatePwd");
+
     }, //跳转修改密码
     bjzl() {
       this.$router.push("/userEdit");
     },
 
     tcdl() {
-
+ 
       localStorage.clear();
+
       this.$router.go(0);
     },
   },
   mounted() {
+    console.log(this.userInfo.nickname);
+    let token=this.token
+getuserInfo({token}).then((res)=>{
+console.log(res);
+this.fbhz=res
+// console.log(this.fbhz);
+})
+
+
     if (localStorage.getItem("uid")) {
       this.sfdl = true;
     } else {
       this.sfdl = false;
     }
-    // this.uid = localStorage.getItem("uid");
-
-    this.axios
-      .post("/user/getuserInfo", {
-        token: localStorage.getItem("tokenID"),
-      })
-      .then((res) => {
-        // console.log(res.data);
-        this.fbhz = res.data;
-        this.getuserInfo = res.data.userInfo;
-        // console.log(this.getuserInfo);
-      });
   },
 };
-</script>
+</script> 
 <style lang="less">
+.van-button__content{
+  span{
+    color: @gread;
+  }
+}
 .van-button__text {
   color: #6b6b6b;
 }

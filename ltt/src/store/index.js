@@ -1,61 +1,58 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import {scqn,scqny} from '../API/user'
-import index from '../API/index'
-Vue.use(Vuex);
+import {scqn,scqny,getuserInfo} from '../API/user'
 
+Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
-    tokenID: "",
-    uid: "",
+    token: "",
+    uid: "", 
     username: "",
     isLogin: false,
     userInfo:{}
-
   }, //放数据的
   getters: {}, //计算属性
   mutations: {
-    change(state, { key, value }) {
+    change(state, { key, value }) { 
       state[key] = value;
     },
+    // let{token,uid,username,isLogin,userInfo}=this,
+clear(state){
+ state.token= "",
+   state.uid= "",
+  state.username= "",
+  state.isLogin= false,
+   state. userInfo={}
+}
   }, //写方法
   actions: {
-    getuser({commit},token){
-getuserInfo(token).then((res)=>{
+  async  getuser({commit},token){
+  return getuserInfo({token}).then((res)=>{
   if(res.code == 0){
-commit("change", {
+         commit("change", {
               key: "isLogin",
               value: true,
             });
-            commit("change", {
-              key: "tokenID",
-              value: tokenID,
+            commit("change", { 
+              key: "token",
+              value: token,
             });
           commit("change", {
               key: "userInfo",
-              value: userInfo,
+              value: res.userInfo, 
             });
             commit("change", {
               key: "uid",
-              value: uid,
+              value: res.uid,
             });
                commit("change", {
               key: "username",
-              value: username,
+              value: res.userInfo.username,
             });
   }else{
-          Toast(res.msg)
-
+console.log(111);
   }
-
-
-
-
-
 })
-
-
-
     },
 
 

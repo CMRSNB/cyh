@@ -23,7 +23,7 @@
       <van-uploader v-model="fileList" multiple />
     </div>
     <div class="publish-six">
-      <van-button type="primary" size="large" @click="fb()">提交</van-button>
+      <van-button type="default" size="large" @click="fb()">提交</van-button>
     </div>
     <buttom></buttom>
   </div>
@@ -114,6 +114,11 @@ export default {
 };
 </script>
 <style lang="less">
+.van-button__content{
+  span{
+    color: @gread;
+  }
+}
 .publish {
   width: 375px;
   background-color: #f5f7f9;
