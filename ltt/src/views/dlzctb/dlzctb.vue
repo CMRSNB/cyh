@@ -10,10 +10,14 @@ export default {};
 </script>
 
 <style lang="less">
-.heder-top a {
+.heder-top{
+ a {
+  color: aliceblue;
   font-size: 18px;
 }
-.heder-top .dlzctb {
-  color: rgb(255, 0, 0);
+
 }
+.heder-top .dlzctb {
+  color: #51bea1;
+} 
 </style>
