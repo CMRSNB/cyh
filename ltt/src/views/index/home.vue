@@ -34,12 +34,13 @@
             class="home-three"
             @click="vixq(v)"
           >
+          <div class="home-index">
+            <div>
             <div class="home-three-top">
               <h3>{{ v.title }}</h3>
             </div>
-            <div class="home-three-tow">
-              <span>作者：{{ v.author }}</span>
-            </div>
+    
+          </div >
             <div
               :class="{
                 img2: v.poster_type == 2,
@@ -54,9 +55,13 @@
               >
                 <template v-slot:error>加载失败</template>
               </van-image>
+              </div>
             </div>
             <div class="home-three-for">
               <span> 日期：{{ timestampToTime(v.time) }} </span>
+                  
+              <em>作者：{{ v.author }}</em>
+            
             </div>
           </div>
         </div>
@@ -66,6 +71,7 @@
   </div>
 </template>
 <script>
+import {wzlb} from'@/API/user.js'
 import buttom from "../index/buttom.vue";
 import Vue from 'vue';
 import { Image as VanImage } from 'vant';
@@ -130,7 +136,16 @@ export default {
               limit: 10,
             })
             .then((res) => {
-              this.wzlb.push(...res.data.data);
+                   res.data.data.forEach((v,i) => {
+          if(v.poster_type==1){
+           res.data.data.splice(i,1)
+          }else{
+        this.wzlb.push( res.data.data[i])
+          }
+
+          });
+
+              // this.wzlb.push(...res.data.data);
             });
         this.loading = false;
         if (this.wzlb.length >= this.counts * 10) {
@@ -149,9 +164,18 @@ export default {
             limit: "10",
           })
           .then((res) => {
+                 res.data.data.forEach((v,i) => {
+          if(v.poster_type==1){
+           res.data.data.splice(i,1)
+          }else{
+        this.wzlb.push( res.data.data[i])
+          }
+
+          });
+
             // console.log(res.data.data);
             // console.log(res.data.data[index].author_id);
-            this.wzlb = res.data.data;
+            // this.wzlb = res.data.data;
           });
       }, 1000);
     }, //上拉刷新
@@ -186,6 +210,17 @@ export default {
     },
   }, //接受索引点击哪一个得到哪一个的文章列表
   mounted() {
+    // function bbb(aaa){
+    //           aaa.forEach((v,i) => {
+
+    //       if(v.poster_type==1){
+    //       aaa.splice(i,1)
+    //       }else{
+    //     this.wzlb.push(aaa[i])
+    //       }    
+    //       });
+    // }
+    wzlb()
     this.axios.post("/api/get_cate_list").then((res) => {
       // console.log(res.data.data);
       this.hqfl = res.data.data;
@@ -199,9 +234,15 @@ export default {
           limit: "10",
         })
         .then((res) => {
-          this.wzlb = res.data.data;
-          console.log(res.data);
-          // console.log(res.data.count);
+         res.data.data.forEach((v,i) => {
+          if(v.poster_type==1){
+           res.data.data.splice(i,1)
+          }else{
+        this.wzlb.push( res.data.data[i])
+          }
+
+          });
+
           this.counts = parseInt(res.data.count / 10);
    
         });
@@ -210,6 +251,9 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.home{
+background-color: rgb(226, 225, 225);
+}
 .home-tow .van-tabs__nav .van-tabs__line{
 background-color: #ccc;
 }
@@ -259,36 +303,41 @@ border-right: none
 .img3 .van-image {
   width: 30%;
   height: 100px;
+  float: right;
 }
 
 .img2 {
   width: 375px;
-  height: 250px;
+  // height: 250px;
   // text-align: center;
   display: flex;
-  justify-content: space-around;
-  margin: 0 auto;
+  // justify-content: space-around;
+  // margin: 0 auto;
+
+  justify-content: flex-end;
 }
 .img2 .van-image {
-  width: 350px;
-  height: 250px;
+  width: 100px;
+  height: 100px;
+  border-radius: 20px;
+margin-right: 10px;
 }
-
 .home-three {
   width: 375px;
-  margin-bottom: 20px;
+  background-color: #fff;
+  // display: flex;
+  margin-bottom: 10px;
 }
-.home-three h3 {
+.home-three-top h3 {
   margin: 0;
-  width: 200px;
-  font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 18px;
+  color: #343434;
   font-style: normal;
   padding-left: 10px;
 }
 .home-three-tow{
+  width: 250px;
+
   margin:4px 10px;
 }
 .home-three-tow span {
@@ -297,9 +346,18 @@ border-right: none
 }
 .home-three-for{
 margin: 4px 0;
-}
-.home-three-for span {
+span {
   font-size: 12px;
   padding-left: 10px;
+color: #8c8c8d;
 }
+em{
+  padding-left: 10px;
+
+  font-size: 12px;
+color: #8c8c8d;
+font-style: normal;
+}
+}
+
 </style>

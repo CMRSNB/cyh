@@ -29,3 +29,6 @@ export function wdfb(params){
 export function shfb(params){
   return axios.post('/api/del_user_article',params)
 }//删除发布
+export function wzlb(params){
+  return axios.post('/api/get_article_list',params)
+}//获取文章列表

@@ -17,6 +17,9 @@ const routes = [
     name: "my",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/index/my.vue"),
+         meta: {
+      needLogin: true, //需要加校检判断的路由
+    },
   }, //我的页面
   {
     path: "/publish",
