@@ -33,32 +33,28 @@
             :key="i"
             class="home-three"
             @click="vixq(v)"
+            :class="{
+              img0: v.imageSrc.length == 0,
+              img1: v.imageSrc.length == 1,
+              img2: v.imageSrc.length == 2,
+              img3: v.imageSrc.length == 3,
+            }"
           >
-            <div class="home-index">
-              <div>
-                <div class="home-three-top">
-                  <h3>{{ v.title }}</h3>
-                </div>
-              </div>
-              <div
-                :class="{
-                  img2: v.poster_type == 2,
-                  img3: v.poster_type == 3,
-                }"
+            <div class="home-three-top">
+              <p>{{ v.title }}</p>
+            </div>
+            <div class="home-three-img">
+              <van-image
+                v-for="(value, index) in v.imageSrc"
+                lazy-load
+                :src="value"
+                :key="index"
               >
-                <van-image
-                  v-for="(value, index) in v.imageSrc"
-                  lazy-load
-                  :src="value"
-                  :key="index"
-                >
-                  <template v-slot:error>加载失败</template>
-                </van-image>
-              </div>
+                <template v-slot:error>加载失败</template>
+              </van-image>
             </div>
             <div class="home-three-for">
               <span> 日期：{{ timestampToTime(v.time) }} </span>
-
               <em>作者：{{ v.author }}</em>
             </div>
           </div>
@@ -230,6 +226,7 @@ export default {
           limit: "10",
         })
         .then((res) => {
+          console.log(res.data);
           res.data.data.forEach((v, i) => {
             if (v.poster_type == 1) {
               res.data.data.splice(i, 1);
@@ -245,18 +242,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.home-tow .van-tabs__nav .van-tabs__line {
-  background-color: #ccc;
-}
-::v-deep .van-tab {
-  border-bottom: 2px solid #ccc;
-  border-right: 2px solid #ccc;
-}
-
-::v-deep .van-tab:nth-child(7) {
-  border-right: none;
-}
-
 .home-one {
   background-color: @color;
   height: 47.89px;
@@ -286,64 +271,114 @@ export default {
   width: none;
   height: none;
 }
-.img3 {
-  display: flex;
-  justify-content: space-around;
-}
-.img3 .van-image {
-  width: 30%;
-  height: 100px;
-  float: right;
-}
+.home-three {
+  width: 360px;
+  margin: 10px auto;
+  .home-three-for {
+    span {
+      display: inline-block;
+      // height: 20px;
+      font-size: 12px;
+      color: #232a36;
+      line-height: 37.4px;
+    }
+    em {
+      display: inline-block;
+      // height: 20px;
+      line-height: 37.4px;
 
+      font-size: 12px;
+      color: #232a36;
+      font-style: normal;
+      float: right;
+    }
+  } //日期和作者
+
+  .home-three-top {
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  } //标题
+}
+.img1 {
+  height: 150px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas:
+    "z z z z b b"
+    "z z z z b b"
+    "e e e e e e";
+  .home-three-top {
+    grid-area: z;
+  }
+  .home-three-for {
+  }
+  .home-three-img {
+    grid-area: b;
+  }
+  .home-three-for {
+    grid-area: e;
+  }
+
+  .van-image {
+    width: 100%;
+    height: 100%;
+  }
+} //1章图片
 .img2 {
-  width: 375px;
-  display: flex;
-  justify-content: flex-end;
+  height: 150px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas:
+    "z z b b b b"
+    "z z b b b b"
+    "e e e e e e";
+  .home-three-top {
+    grid-area: z;
+  }
+  .home-three-img {
+    grid-area: b;
+  }
+  .home-three-for {
+    grid-area: e;
+  }
+  .van-image {
+    width: 50%;
+    height: 100%;
+  }
+}
+.img3 {
+  height: 150px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-areas:
+    "z z z z z z"
+    "b b b b b b"
+    "b b b b b b"
+    "e e e e e e";
+  .home-three-top {
+    grid-area: z;
+  }
+  .home-three-img {
+    grid-area: b;
+  }
+  .home-three-for {
+    grid-area: e;
+  }
+
+  .van-image {
+    display: flex;
+    justify-content: space-between;
+    width: 33%;
+    height: 100%;
+    float: right;
+  }
 }
 ::v-deep .van-image__img {
   border-radius: 10px;
 } //图片设值
-.img2 .van-image {
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-}
-.home-three {
-  width: 375px;
-  background-color: #fff;
-  // display: flex;
-  margin-bottom: 10px;
-}
-.home-three-top h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #343434;
-  font-style: normal;
-  padding-left: 10px;
-}
-.home-three-tow {
-  width: 250px;
-
-  margin: 4px 10px;
-}
-.home-three-tow span {
-  display: inline-block;
-  font-size: 12px;
-}
-.home-three-for {
-  margin: 4px 0;
-  span {
-    font-size: 12px;
-    padding-left: 10px;
-    color: #8c8c8d;
-  }
-  em {
-    padding-left: 10px;
-
-    font-size: 12px;
-    color: #ffffff;
-    font-style: normal;
-  }
-}
 </style>
