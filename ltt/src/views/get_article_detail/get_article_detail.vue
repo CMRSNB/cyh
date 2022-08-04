@@ -152,7 +152,7 @@
           @click="wzdz"
           :style="{ color: is_like ? 'red' : '#ccc' }"
         />
-        <van-icon name="share" @click="fxmb" />
+        <van-icon name="share" @click="showShare = true" />
       </div>
     </div>
     <!-- 最下满的内容 -->
@@ -160,14 +160,28 @@
       v-model="showShare"
       title="立即分享给好友"
       :options="options"
+      @select="onSelect"
     />
     <!-- 分享面板内容 -->
     <!-- 最下面 -->
+
+    <div>
+      <!-- <van-cell is-link @click="showPopup">展示弹出层</van-cell> -->
+      <van-popup v-model="showshow">
+        <div class="ewm">
+          <span>扫一扫</span>
+          <img :src="ewm" alt="" />
+        </div>
+      </van-popup>
+    </div>
   </div>
 </template>
 <script>
 import Vue from "vue";
+import { Popup } from "vant";
+Vue.use(Popup);
 import { Skeleton, Lazyload, ShareSheet } from "vant";
+import QRCode from "qrcode"; //生成2微码
 Vue.use(ShareSheet);
 Vue.use(Skeleton);
 Vue.use(Lazyload);
@@ -178,6 +192,7 @@ export default {
   },
   data() {
     return {
+      showshow: false, //二维码展示
       key: 1, //key值可以监听二级评论的刷新
       loading: true,
       sms: "", //二级评论内容
@@ -189,7 +204,7 @@ export default {
       SHOW: false,
       value: "",
       authorID: "", //文章id
-      wzxq: {},
+      wzxq: [],
       pllb: [], //评论列表
       sttus: 1,
       reply_comment_id: "",
@@ -201,26 +216,59 @@ export default {
       ejisLINK: false, //二级评论点赞
       sanjipinlu: "作者",
       showShare: false, //分享面板内容
+      ewm: "", //二维码
       options: [
-        [
-          { name: "微信", icon: "wechat" },
-          { name: "朋友圈", icon: "wechat-moments" },
-          { name: "微博", icon: "weibo" },
-          { name: "QQ", icon: "qq" },
-        ],
-        [
-          { name: "复制链接", icon: "link" },
-          { name: "分享海报", icon: "poster" },
-          { name: "二维码", icon: "qrcode" },
-          { name: "小程序码", icon: "weapp-qrcode" },
-        ],
-      ], //分享面板内容
+        { name: "qq", icon: "qq" },
+
+        { name: "微信", icon: "wechat" },
+        { name: "微博", icon: "weibo" },
+        { name: "复制链接", icon: "link" },
+        { name: "分享海报", icon: "poster" },
+        { name: "二维码", icon: "qrcode" },
+      ],
     };
   },
+
   methods: {
-    fxmb() {
-      // let {showShare}=this
-      this.showShare = true;
+    onSelect({ name }) {
+      console.log(name);
+      let { title, imageSrc } = this.wzxq;
+      let href = window.location.href;
+
+      switch (name) {
+        case "qq":
+          window.location.href = `https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=${window.location.href}&sharesource=weibo&title=${title}&pic=${imageSrc[0]}`;
+          break;
+        case "微博":
+          window.location.href = `
+          http://service.weibo.com/share/share.php?url=${window.location.href}&sharesource=weibo&title=${title}&pic=${imageSrc[0]}`;
+          break;
+        case "复制链接":
+          let input = document.createElement("input");
+          input.value = href;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand("Copy");
+          document.body.removeChild(input);
+          break;
+        case "微信":
+        case "二维码":
+          QRCode.toDataURL(href)
+            .then((url) => {
+              console.log(url);
+              this.ewm = url;
+              this.showShare = false;
+              this.showshow = true;
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+
+          break;
+
+        case "分享海报":
+          break;
+      }
     },
     sanjiplun(value, index) {
       console.log(index);
@@ -501,6 +549,7 @@ export default {
         this.is_fav = res.data.data.is_fav;
         this.is_like = res.data.data.is_like;
         this.wzxq = res.data.data;
+        console.log(this.wzxq);
         this.articleID = res.data.data.article_id;
         this.loading = false;
         // console.log(res.data);
@@ -524,6 +573,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.ewm {
+  text-align: center;
+
+  span {
+    font-size: 18px;
+    color: #1c1c1c;
+  }
+} //二维码
+
 .ejplzz {
   // height: 70px;
   margin-bottom: 20px;

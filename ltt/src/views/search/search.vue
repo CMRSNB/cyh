@@ -15,8 +15,7 @@
     <div class="search-tow">
       <span>近期搜索：</span>
       <div class="search-tow-one" v-for="(neirong, index) in jqss" :key="index">
-        <span>{{neirong}}</span
-        >
+        <span>{{ neirong }}</span>
         <i @click="qcmh(neirong, index)">x</i>
       </div>
     </div>
@@ -28,14 +27,12 @@
         @click="wzxq(value)"
       >
         <span>{{ value.title }}</span>
-        <!-- <i>x</i> -->
       </div>
       <!-- 点击上传文章详情 -->
     </div>
   </div>
 </template>
 <script>
-
 import { Toast } from "vant";
 export default {
   data() {
@@ -49,11 +46,11 @@ export default {
   },
   methods: {
     wzxq(neirong, index) {
-  console.log(neirong);
-  console.log(1);
-  console.log(this.jqss);
-      this.jqss.unshift(neirong.title);
-      localStorage.setItem('jqss', JSON.stringify(this.jqss))
+      console.log(neirong);
+      console.log(neirong.title);
+      // this.jqss.unshift(1);
+      localStorage.setItem("jqss", JSON.stringify(neirong.title));
+      console.log(this.jqss);
       this.$router.push({
         path: "/getArticleDetail",
         query: {
@@ -91,9 +88,9 @@ export default {
       }, 500);
     }, //搜索关键词
     onSearch(val) {
-   console.log(val);
+      console.log(val);
       this.jqss.unshift(val);
-      localStorage.setItem('jqss', JSON.stringify(this.jqss))
+      localStorage.setItem("jqss", JSON.stringify(this.jqss));
       // localStorage.jqss = JSON.stringify(this.jqss);
     }, //点击enter键
     onCancel() {
@@ -102,8 +99,11 @@ export default {
   },
   mounted() {
     // console.log(123);
-    this.jqss = JSON.parse(localStorage.getItem("jqss"));
-    console.log(this.jqss);
+    if (!localStorage.getItem("jqss")) {
+      return;
+    } else {
+      this.jqss = JSON.parse(localStorage.getItem("jqss"));
+    }
   },
 };
 </script>
