@@ -1,6 +1,6 @@
 <template>
-<div class="dz">
-    <div><go></go> <van-nav-bar title="我的发布" /></div>
+  <div class="dz">
+    <div class="dz-top"><go></go><van-nav-bar title="我的发布" /></div>
     <div>
       <van-list
         v-model="loading"
@@ -13,20 +13,15 @@
             v-for="(v, i) in wzlb"
             :key="i"
             class="home-three"
-            @click="vixq(v,i)"
+            @click="vixq(v, i)"
           >
             <div class="home-three-top">
               <h3>{{ wzlb[i].title }}</h3>
-                      <em @click.stop="scfb(v,i)">X</em>
+              <em @click.stop="scfb(v, i)">X</em>
             </div>
             <div class="home-three-tow">
-              <span>作者：{{  wzlb[i].author }}</span> 
+              <span>作者：{{ wzlb[i].author }}</span>
             </div>
-         
-           
-        
-         
-          
             <div
               :class="{
                 img2: v.poster_type == 2,
@@ -47,53 +42,46 @@
           </div>
         </div>
       </van-list>
-   
-</div>
-
-
-</div>
-   
+    </div>
+  </div>
 </template>
 
 <script>
 function beforeClose(action, done) {
-  if (action === 'confirm') {
+  if (action === "confirm") {
     setTimeout(done, 1000);
   } else {
     done();
   }
 }
-import go from'../go/go.vue'
-import {wdfb,shfb} from '@/API/user'
-import { mapState } from 'vuex'
-import { Dialog } from 'vant';
+import go from "../go/go.vue";
+import { wdfb, shfb } from "@/API/user";
+import { mapState } from "vuex";
+import { Dialog } from "vant";
 export default {
-    data() {
-        return {
-       loading: false,
+  data() {
+    return {
+      loading: false,
       finished: false,
       isLoading: false,
       value: "",
-      
+
       wzlb: [], //第一个文章列表
       hqflID: [], //获取id
       index: 0,
       counts: 0,
       count: 0,
-
-        }
-    },
-components:{
+    };
+  },
+  components: {
     go,
-        [Dialog.Component.name]: Dialog.Component,
-}
-,
-computed:{
-...mapState(['uid'])
-},
-methods: {
-    
-        // 时间戳：1637244864707
+    [Dialog.Component.name]: Dialog.Component,
+  },
+  computed: {
+    ...mapState(["uid"]),
+  },
+  methods: {
+    // 时间戳：1637244864707
     /* 时间戳转换为时间 */
     timestampToTime(timestamp) {
       timestamp = timestamp ? timestamp : null;
@@ -115,62 +103,51 @@ methods: {
       return Y + M + D;
     },
 
-scfb(v,i){
-console.log(v);
-let {_id}=v
-let {uid}=this
+    scfb(v, i) {
+      console.log(v);
+      let { _id } = v;
+      let { uid } = this;
 
-
-Dialog.confirm({
-        title: '提醒',
-        message: '是否要删除',
-   beforeClose,
+      Dialog.confirm({
+        title: "提醒",
+        message: "是否要删除",
       }).then(() => {
-shfb({_id,uid}).then((res)=>{ 
-    console.log(res);
-    console.log(this.wzlb);
-    this.wzlb.splice(i,1)
-})
+        shfb({ _id, uid }).then((res) => {
+          console.log(res);
+          console.log(this.wzlb);
+          this.wzlb.splice(i, 1);
+        });
       });
-   
-
-
-
-
-
-
-},//删除发布
+    }, //删除发布
 
     onLoad(flag) {
       console.log(flag);
-      let{uid}=this
-          wdfb({uid,limit: 10,}).then((res)=>{
-    console.log(res.data)
-
-})
+      let { uid } = this;
+      wdfb({ uid, limit: 10 }).then((res) => {
+        console.log(res.data);
+      });
       setTimeout(() => {
-let {uid}=this
-      this.count += 10;
-      console.log(this.count);
+        let { uid } = this;
+        this.count += 10;
+        console.log(this.count);
         if (this.refreshing) {
           this.wzlb = [];
           this.refreshing = false;
-        }   
-       
+        }
 
-          wdfb({uid,limit: 10,skip:this.count}).then((res)=>{  
-            // console.log( this.count);
-            // console.log(res.count);           
-                // console.log(res.data);
- this.wzlb.push(...res.data);
-}) 
+        wdfb({ uid, limit: 10, skip: this.count }).then((res) => {
+          // console.log( this.count);
+          // console.log(res.count);
+          // console.log(res.data);
+          this.wzlb.push(...res.data);
+        });
         this.loading = false;
         if (this.wzlb.length >= this.counts) {
           this.finished = true;
         }
       }, 1000);
     }, //底部刷新
-         vixq(v) {
+    vixq(v) {
       // console.log(v);
       this.$router.push({
         path: "/getArticleDetail",
@@ -178,60 +155,61 @@ let {uid}=this
           authorID: v._id,
         },
       });
-    }, //点击跳转详情页     
-},
+    }, //点击跳转详情页
+  },
 
-mounted() {
-
-let {uid}=this
-wdfb({uid}).then((res)=>{
-    // console.log(res.data.title)
-    console.log(res);
-    this.counts=res.count
-   this.wzlb= res.data
-})
- 
-},
-
-}
+  mounted() {
+    let { uid } = this;
+    wdfb({ uid }).then((res) => {
+      // console.log(res.data.title)
+      console.log(res);
+      this.counts = res.count;
+      this.wzlb = res.data;
+    });
+  },
+};
 </script>
 
 <style lang="less" scoped>
-.dz{
- min-width: 375px;  
+.van-nav-bar__content {
+  width: 200px;
+}
+.dz-top {
+  width: 100%;
+}
+.dz {
+  min-width: 375px;
 }
 
-.home-three-top{
-    h3{
-        width: 340px;
-    }
-    em{
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        border-radius: 50%;
-        border: 2px solid #000;
-line-height: 30px;
-text-align:center ;
-     float: right;
-        margin-right: 10px;
-        font-weight: bolder ;
-        margin-bottom: 10px;
-    }
+.home-three-top {
+  h3 {
+    // width: 340px;
+  }
+  em {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    line-height: 30px;
+    text-align: center;
+    float: right;
+    margin-right: 10px;
+    font-weight: bolder;
+    margin-bottom: 10px;
+  }
 }
 
-
-
-.home-tow .van-tabs__nav .van-tabs__line{
-background-color: #ccc;
+.home-tow .van-tabs__nav .van-tabs__line {
+  background-color: #ccc;
 }
-::v-deep .van-tab{
+::v-deep .van-tab {
   border-bottom: 2px solid #ccc;
-border-right: 2px solid #ccc;
+  border-right: 2px solid #ccc;
 }
 
-::v-deep .van-tab:nth-child(7){
-border-right: none
+::v-deep .van-tab:nth-child(7) {
+  border-right: none;
 }
 
 .home-one {
@@ -291,23 +269,23 @@ border-right: none
 }
 .home-three h3 {
   margin: 0;
-  width: 200px;
+  width: 100%;
   font-size: 14px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
   font-style: normal;
   padding-left: 10px;
 }
 
-.home-three-tow{
-    em{
-    
-    }
-}
-.home-three-tow span {
-  font-size: 12px;
-  padding-left: 10px;
+.home-three-tow {
+  span {
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    font-size: 12px;
+    padding-left: 10px;
+  }
 }
 
 .home-three-for span {

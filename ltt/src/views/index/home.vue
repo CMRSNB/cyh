@@ -34,49 +34,47 @@
             class="home-three"
             @click="vixq(v)"
           >
-          <div class="home-index">
-            <div>
-            <div class="home-three-top">
-              <h3>{{ v.title }}</h3>
-            </div>
-    
-          </div >
-            <div
-              :class="{
-                img2: v.poster_type == 2,
-                img3: v.poster_type == 3,
-              }"
-            >
-              <van-image
-                v-for="(value, index) in v.imageSrc"
-            lazy-load
-                :src="value"
-                :key="index"
+            <div class="home-index">
+              <div>
+                <div class="home-three-top">
+                  <h3>{{ v.title }}</h3>
+                </div>
+              </div>
+              <div
+                :class="{
+                  img2: v.poster_type == 2,
+                  img3: v.poster_type == 3,
+                }"
               >
-                <template v-slot:error>加载失败</template>
-              </van-image>
+                <van-image
+                  v-for="(value, index) in v.imageSrc"
+                  lazy-load
+                  :src="value"
+                  :key="index"
+                >
+                  <template v-slot:error>加载失败</template>
+                </van-image>
               </div>
             </div>
             <div class="home-three-for">
               <span> 日期：{{ timestampToTime(v.time) }} </span>
-                  
+
               <em>作者：{{ v.author }}</em>
-            
             </div>
           </div>
         </div>
       </van-list>
     </van-pull-refresh>
-  <buttom></buttom>
+    <buttom></buttom>
   </div>
 </template>
 <script>
-import {wzlb} from'@/API/user.js'
+import { wzlb } from "@/API/user.js";
 import buttom from "../index/buttom.vue";
-import Vue from 'vue';
-import { Image as VanImage } from 'vant';
+import Vue from "vue";
+import { Image as VanImage } from "vant";
 Vue.use(VanImage);
-import { Lazyload } from 'vant';
+import { Lazyload } from "vant";
 Vue.use(Lazyload);
 export default {
   components: {
@@ -100,7 +98,7 @@ export default {
   methods: {
     search() {
       this.$router.push("/search");
-    },//搜索
+    }, //搜索
     // 时间戳：1637244864707
     /* 时间戳转换为时间 */
     timestampToTime(timestamp) {
@@ -129,24 +127,23 @@ export default {
           this.wzlb = [];
           this.refreshing = false;
         }
-          this.axios
-            .post("/api/get_article_list", {
-              cate_id: this.hqflID[this.index]._id,
-              skip: this.count,
-              limit: 10,
-            })
-            .then((res) => {
-                   res.data.data.forEach((v,i) => {
-          if(v.poster_type==1){
-           res.data.data.splice(i,1)
-          }else{
-        this.wzlb.push( res.data.data[i])
-          }
-
-          });
-
-              // this.wzlb.push(...res.data.data);
+        this.axios
+          .post("/api/get_article_list", {
+            cate_id: this.hqflID[this.index]._id,
+            skip: this.count,
+            limit: 10,
+          })
+          .then((res) => {
+            res.data.data.forEach((v, i) => {
+              if (v.poster_type == 1) {
+                res.data.data.splice(i, 1);
+              } else {
+                this.wzlb.push(res.data.data[i]);
+              }
             });
+
+            // this.wzlb.push(...res.data.data);
+          });
         this.loading = false;
         if (this.wzlb.length >= this.counts * 10) {
           this.finished = true;
@@ -164,14 +161,13 @@ export default {
             limit: "10",
           })
           .then((res) => {
-                 res.data.data.forEach((v,i) => {
-          if(v.poster_type==1){
-           res.data.data.splice(i,1)
-          }else{
-        this.wzlb.push( res.data.data[i])
-          }
-
-          });
+            res.data.data.forEach((v, i) => {
+              if (v.poster_type == 1) {
+                res.data.data.splice(i, 1);
+              } else {
+                this.wzlb.push(res.data.data[i]);
+              }
+            });
 
             // console.log(res.data.data);
             // console.log(res.data.data[index].author_id);
@@ -217,10 +213,10 @@ export default {
     //       aaa.splice(i,1)
     //       }else{
     //     this.wzlb.push(aaa[i])
-    //       }    
+    //       }
     //       });
     // }
-    wzlb()
+    wzlb();
     this.axios.post("/api/get_cate_list").then((res) => {
       // console.log(res.data.data);
       this.hqfl = res.data.data;
@@ -234,36 +230,34 @@ export default {
           limit: "10",
         })
         .then((res) => {
-         res.data.data.forEach((v,i) => {
-          if(v.poster_type==1){
-           res.data.data.splice(i,1)
-          }else{
-        this.wzlb.push( res.data.data[i])
-          }
-
+          res.data.data.forEach((v, i) => {
+            if (v.poster_type == 1) {
+              res.data.data.splice(i, 1);
+            } else {
+              this.wzlb.push(res.data.data[i]);
+            }
           });
 
           this.counts = parseInt(res.data.count / 10);
-   
         });
     });
   },
 };
 </script>
 <style lang="less" scoped>
-.home{
-background-color: rgb(226, 225, 225);
+.home {
+  // background-color: rgb(226, 225, 225);
 }
-.home-tow .van-tabs__nav .van-tabs__line{
-background-color: #ccc;
+.home-tow .van-tabs__nav .van-tabs__line {
+  background-color: #ccc;
 }
-::v-deep .van-tab{
+::v-deep .van-tab {
   border-bottom: 2px solid #ccc;
-border-right: 2px solid #ccc;
+  border-right: 2px solid #ccc;
 }
 
-::v-deep .van-tab:nth-child(7){
-border-right: none
+::v-deep .van-tab:nth-child(7) {
+  border-right: none;
 }
 
 .home-one {
@@ -298,7 +292,6 @@ border-right: none
 .img3 {
   display: flex;
   justify-content: space-around;
-
 }
 .img3 .van-image {
   width: 30%;
@@ -320,7 +313,7 @@ border-right: none
   width: 100px;
   height: 100px;
   border-radius: 20px;
-margin-right: 10px;
+  margin-right: 10px;
 }
 .home-three {
   width: 375px;
@@ -335,29 +328,28 @@ margin-right: 10px;
   font-style: normal;
   padding-left: 10px;
 }
-.home-three-tow{
+.home-three-tow {
   width: 250px;
 
-  margin:4px 10px;
+  margin: 4px 10px;
 }
 .home-three-tow span {
   display: inline-block;
   font-size: 12px;
 }
-.home-three-for{
-margin: 4px 0;
-span {
-  font-size: 12px;
-  padding-left: 10px;
-color: #8c8c8d;
-}
-em{
-  padding-left: 10px;
+.home-three-for {
+  margin: 4px 0;
+  span {
+    font-size: 12px;
+    padding-left: 10px;
+    color: #8c8c8d;
+  }
+  em {
+    padding-left: 10px;
 
-  font-size: 12px;
-color: #8c8c8d;
-font-style: normal;
+    font-size: 12px;
+    color: #ffffff;
+    font-style: normal;
+  }
 }
-}
-
 </style>
