@@ -24,7 +24,6 @@ const routes = [
   {
     path: "/publish",
     name: "publish",
-
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/index/publish.vue"),
     meta: {
