@@ -34,7 +34,7 @@
 <script>
 import { Toast } from "vant";
 import dlzctb from "../dlzctb/dlzctb";
-import  {login}from '@/API/user'
+import { login } from "@/API/user";
 export default {
   components: {
     dlzctb,
@@ -54,45 +54,43 @@ export default {
       Toast("按钮");
     },
     onSubmit(values) {
-      console.log('submit', values);
-        login(values)
-        .then((result) => {
-          Toast(result.msg);
-          console.log(result);
-          if (result.code == "0") {
-            this.$router.push("/");
-            let { username, token, uid,userInfo ,tokenExpired } = result;
-            localStorage.userInfo =JSON.stringify(userInfo) ;
-
-            console.log(userInfo);
-            localStorage.setItem("tokenExpired",tokenExpired)
-            localStorage.username = username;
-            localStorage.token = token;
-            localStorage.uid = uid;
-               this.$store.commit("change", {
-              key: "userInfo",
-              value: userInfo,
-            });
-                    this.$store.commit("change", {
-              key: "token",
-              value: token,
-            }); 
-                    this.$store.commit("change", {
-              key: "uid",
-              value: uid,
-            });        this.$store.commit("change", {
-              key: "username",
-              value: username,
-            });
-            this.$store.commit("change", {
-              key: "isLogin",
-              value: true,
-            });
-          }
-        });
+      console.log("submit", values);
+      login(values).then((result) => {
+        Toast(result.msg);
+        console.log(result);
+        if (result.code == "0") {
+          this.$router.push("/");
+          let { username, token, uid, userInfo, tokenExpired } = result;
+          localStorage.userInfo = JSON.stringify(userInfo);
+          console.log(userInfo);
+          localStorage.setItem("tokenExpired", tokenExpired);
+          localStorage.username = username;
+          localStorage.token = token;
+          localStorage.uid = uid;
+          this.$store.commit("change", {
+            key: "userInfo",
+            value: userInfo,
+          });
+          this.$store.commit("change", {
+            key: "token",
+            value: token,
+          });
+          this.$store.commit("change", {
+            key: "uid",
+            value: uid,
+          });
+          this.$store.commit("change", {
+            key: "username",
+            value: username,
+          });
+          this.$store.commit("change", {
+            key: "isLogin",
+            value: true,
+          });
+        }
+      });
     },
   },
-
 };
 </script>
 <style lang="less">
@@ -113,6 +111,7 @@ export default {
   margin: 10px 10px;
 }
 .login-three a {
+  color: rgb(77, 70, 70);
   font-size: 14px;
 }
 </style>

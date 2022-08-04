@@ -2,131 +2,136 @@
   <div class="detail">
     <div class="detail-top"><go></go><van-nav-bar title="文章详情" /></div>
     <!-- 文章详情 -->
-<van-skeleton title avatar :row="3" :loading="loading" >
-    <div class="detail-tow">
-      <h4>{{ wzxq.title }}</h4>
-    </div>
-    <!-- 文章标题 -->
-    <div class="detail-three">
-      <div class="detail-three-list">
-        <img :src="wzxq.avatar" alt="" />
-        <span>{{ wzxq.nickname }}</span>
-        <h4>{{ timestampToTime(wzxq.time) }}</h4>
+    <van-skeleton title avatar :row="3" :loading="loading">
+      <div class="detail-tow">
+        <h4>{{ wzxq.title }}</h4>
       </div>
-      <div class="detail-three-right">
-        <van-button type="primary" size="mini"
-          ><van-icon name="plus" />关注</van-button
-        >
-      </div>
-    </div>
-    <!-- 作者信息 -->
-    <div class="detail-for">
-      <p>
-        {{ wzxq.content }}
-      </p>
-    </div>
-    <!-- 文章信息 -->
-    <div class="detail-five" v-for="(v, i) in pllb" :key="i">
-      <div class="detail-five-list">
-        <div class="detail-five-list-list">
-          <img :src="v.info.avatar" alt="" />
+      <!-- 文章标题 -->
+      <div class="detail-three">
+        <div class="detail-three-list">
+          <img :src="wzxq.avatar" alt="" />
+          <span>{{ wzxq.nickname }}</span>
+          <h4>{{ timestampToTime(wzxq.time) }}</h4>
         </div>
-        <div class="detail-five-list-right">
-          <h3>{{ v.info.nickname }}</h3>
-
-          <h4>{{ v.content }}</h4>
-          <div class="detail-five-list-right-right">
-            <span> {{ timestampToTime(v.create_time) }}</span>
-            <em @click="ejpll(v, i)">{{ v.reply_num }}回复</em>
-          </div>
-          <!-- 点击回复出现二级评论 -->
+        <div class="detail-three-right">
+          <van-button type="primary" size="mini"
+            ><van-icon name="plus" />关注</van-button
+          >
         </div>
-        <!-- 点击回复出现 -->
       </div>
-      <div>
-        <van-popup
-          v-model="EJPL"
-          position="bottom"
-          closeable
-          :style="{ height: '100%' }"
-        >
-          <div class="ejpl-top"><h3>回复</h3></div>
-          <!-- 二级评论上面回复 -->
-          <div class="ejpl ejplzz">
-            <div class="ejpl-left">
-              <div>
-                <img :src="pllb[ejsy].info.avatar" alt="" />
-              </div>
-              <div class="ejpl-three">
-                <h3>{{ pllb[ejsy].info.nickname }}</h3>
-
-                <h4>{{ pllb[ejsy].content }}</h4>
-                <span> {{ timestampToTime(pllb[i].create_time) }}</span>
-              </div>
-            </div>
-            <div class="ejpl-right">
-              <van-icon
-                name="good-job"
-                :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
-                @click="pldz(v, i)"
-              />
-              <span>{{ pllb[ejsy].like_count }}</span>
-            </div>
+      <!-- 作者信息 -->
+      <div class="detail-for">
+        <p>
+          {{ wzxq.content }}
+        </p>
+      </div>
+      <!-- 文章信息 -->
+      <div class="detail-five" v-for="(v, i) in pllb" :key="i">
+        <div class="detail-five-list">
+          <div class="detail-five-list-list">
+            <img :src="v.info.avatar" alt="" />
           </div>
-          <!-- 二级评论评论人详情 -->
-          <div class="ejplpllb" v-if="EJPL">
-            <div class="ejpl" v-for="(value, index) in ejplllb"  @click="sanjiplun(value, index)" :key="index">
+          <div class="detail-five-list-right">
+            <h3>{{ v.info.nickname }}</h3>
+
+            <h4>{{ v.content }}</h4>
+            <div class="detail-five-list-right-right">
+              <span> {{ timestampToTime(v.create_time) }}</span>
+              <em @click="ejpll(v, i)">{{ v.reply_num }}回复</em>
+            </div>
+            <!-- 点击回复出现二级评论 -->
+          </div>
+          <!-- 点击回复出现 -->
+        </div>
+        <div>
+          <van-popup
+            v-model="EJPL"
+            position="bottom"
+            closeable
+            :style="{ height: '100%' }"
+          >
+            <div class="ejpl-top"><h3>回复</h3></div>
+            <!-- 二级评论上面回复 -->
+            <div class="ejpl ejplzz">
               <div class="ejpl-left">
                 <div>
-                  <img :src="value.info.avatar" alt="" />
+                  <img :src="pllb[ejsy].info.avatar" alt="" />
                 </div>
                 <div class="ejpl-three">
-                  <h3>{{ value.info.nickname }} <span>回复=>123</span> </h3>
-                  <h4>{{ value.content }}</h4>
-                  <span>{{ timestampToTime(value.create_time) }}</span>
+                  <h3>{{ pllb[ejsy].info.nickname }}</h3>
+
+                  <h4>{{ pllb[ejsy].content }}</h4>
+                  <span> {{ timestampToTime(pllb[i].create_time) }}</span>
                 </div>
               </div>
               <div class="ejpl-right">
                 <van-icon
                   name="good-job"
-                  @click="ejpldz(value, index)"
-                  :style="{ color: value.is_like ? 'red' : '#ccc' }"
+                  :style="{ color: pllb[ejsy].is_like ? 'red' : '#ccc' }"
+                  @click="pldz(v, i)"
                 />
-                <span>{{ value.like_count }}</span>
+                <span>{{ pllb[ejsy].like_count }}</span>
               </div>
             </div>
+            <!-- 二级评论评论人详情 -->
+            <div class="ejplpllb" v-if="EJPL">
+              <div
+                class="ejpl"
+                v-for="(value, index) in ejplllb"
+                @click="sanjiplun(value, index)"
+                :key="index"
+              >
+                <div class="ejpl-left">
+                  <div>
+                    <img :src="value.info.avatar" alt="" />
+                  </div>
+                  <div class="ejpl-three">
+                    <h3>{{ value.info.nickname }} <span>回复=>123</span></h3>
+                    <h4>{{ value.content }}</h4>
+                    <span>{{ timestampToTime(value.create_time) }}</span>
+                  </div>
+                </div>
+                <div class="ejpl-right">
+                  <van-icon
+                    name="good-job"
+                    @click="ejpldz(value, index)"
+                    :style="{ color: value.is_like ? 'red' : '#ccc' }"
+                  />
+                  <span>{{ value.like_count }}</span>
+                </div>
+              </div>
+            </div>
+            <!-- 二级评论评论列表 -->
+            <div class="ejpl-buttom">
+              <van-field
+                v-model="sms"
+                center
+                clearable
+                :placeholder="'回复:' + sanjipinlu"
+              >
+                <template #button>
+                  <van-button size="small" type="primary" @click="ejplplnr"
+                    >评论</van-button
+                  >
+                </template>
+              </van-field>
+            </div>
+            <!-- 二级评论评论内容 -->
+          </van-popup>
+        </div>
+        <!-- 二级评论 -->
+        <div class="detail-five-right">
+          <div class="detail-five-right-left"></div>
+          <div class="detail-five-right-right">
+            <van-icon
+              name="good-job"
+              :style="{ color: v.is_like ? 'red' : '#ccc' }"
+              @click="pldz(v, i)"
+            />
+            <span>{{ v.like_count }}</span>
           </div>
-          <!-- 二级评论评论列表 -->
-          <div class="ejpl-buttom">
-            <van-field
-              v-model="sms"
-              center
-              clearable
-              :placeholder="'回复:'+sanjipinlu"
-            >
-              <template #button>
-                <van-button size="small" type="primary" @click="ejplplnr"
-                  >评论</van-button
-                >
-              </template>
-            </van-field>
-          </div>
-          <!-- 二级评论评论内容 -->
-        </van-popup>
-      </div>
-      <!-- 二级评论 -->
-      <div class="detail-five-right">
-        <div class="detail-five-right-left"></div>
-        <div class="detail-five-right-right">
-          <van-icon
-            name="good-job"
-            :style="{ color: v.is_like ? 'red' : '#ccc' }"
-            @click="pldz(v, i)"
-          />
-          <span>{{ v.like_count }}</span>
         </div>
       </div>
-    </div>
     </van-skeleton>
     <!-- 评论详情 -->
     <div class="detail-six">
@@ -147,22 +152,22 @@
           @click="wzdz"
           :style="{ color: is_like ? 'red' : '#ccc' }"
         />
-        <van-icon name="share"  @click="fxmb" />
+        <van-icon name="share" @click="fxmb" />
       </div>
     </div>
     <!-- 最下满的内容 -->
-  <van-share-sheet
-  v-model="showShare"
-  title="立即分享给好友"
-  :options="options"
-/>
-<!-- 分享面板内容 -->
+    <van-share-sheet
+      v-model="showShare"
+      title="立即分享给好友"
+      :options="options"
+    />
+    <!-- 分享面板内容 -->
     <!-- 最下面 -->
   </div>
 </template>
 <script>
-import Vue from 'vue';
-import { Skeleton,Lazyload,ShareSheet } from 'vant';
+import Vue from "vue";
+import { Skeleton, Lazyload, ShareSheet } from "vant";
 Vue.use(ShareSheet);
 Vue.use(Skeleton);
 Vue.use(Lazyload);
@@ -173,17 +178,17 @@ export default {
   },
   data() {
     return {
-      key:1,//key值可以监听二级评论的刷新
+      key: 1, //key值可以监听二级评论的刷新
       loading: true,
       sms: "", //二级评论内容
       ejplhf: "",
-      EJPL: false,//控制二级评论的显示与隐藏
+      EJPL: false, //控制二级评论的显示与隐藏
       show: false,
       HF: "",
       message: "",
       SHOW: false,
       value: "",
-      authorID: "",//文章id
+      authorID: "", //文章id
       wzxq: {},
       pllb: [], //评论列表
       sttus: 1,
@@ -194,34 +199,34 @@ export default {
       ejsy: 0, //点击回复出现传出的二级评论索引
       ejplllb: [], //二级评论列表
       ejisLINK: false, //二级评论点赞
-      sanjipinlu:'作者',
-       showShare: false,//分享面板内容
+      sanjipinlu: "作者",
+      showShare: false, //分享面板内容
       options: [
         [
-          { name: '微信', icon: 'wechat' },
-          { name: '朋友圈', icon: 'wechat-moments' },
-          { name: '微博', icon: 'weibo' },
-          { name: 'QQ', icon: 'qq' },
+          { name: "微信", icon: "wechat" },
+          { name: "朋友圈", icon: "wechat-moments" },
+          { name: "微博", icon: "weibo" },
+          { name: "QQ", icon: "qq" },
         ],
         [
-          { name: '复制链接', icon: 'link' },
-          { name: '分享海报', icon: 'poster' },
-          { name: '二维码', icon: 'qrcode' },
-          { name: '小程序码', icon: 'weapp-qrcode' },
+          { name: "复制链接", icon: "link" },
+          { name: "分享海报", icon: "poster" },
+          { name: "二维码", icon: "qrcode" },
+          { name: "小程序码", icon: "weapp-qrcode" },
         ],
-      ],//分享面板内容
+      ], //分享面板内容
     };
   },
   methods: {
-fxmb(){
-// let {showShare}=this
-this.showShare=true
-},
-    sanjiplun(value, index){
-console.log(index);
-console.log(value);
-this.sanjipinlu=value.info.nickname
-    },//三级评论
+    fxmb() {
+      // let {showShare}=this
+      this.showShare = true;
+    },
+    sanjiplun(value, index) {
+      console.log(index);
+      console.log(value);
+      this.sanjipinlu = value.info.nickname;
+    }, //三级评论
     ejpldz(value, index) {
       // value.ejisLINK = !value.ejisLINK;
       value.is_like = !value.is_like;
@@ -263,26 +268,24 @@ this.sanjipinlu=value.info.nickname
             content: this.sms, //二级评论内容
           })
           .then((res) => {
-           if(res.data.code==0){
-this.pllb[this.ejsy].reply_num++
-             this.sms=''
-               console.log(res.data);
-            this.axios
-              .post("/api/get_reply_list", {
-                article_id: this.authorID,
-                skip: 0,
-                limit: 5,
-                reply_comment_id: this.pllb[this.ejsy]._id,
-                user_id: localStorage.getItem("uid"),
-              })
-              .then((res) => {
-                console.log(res.data.data);
-                this.ejplllb = res.data.data;
-              });
-           }else{
-
-           }
-          
+            if (res.data.code == 0) {
+              this.pllb[this.ejsy].reply_num++;
+              this.sms = "";
+              console.log(res.data);
+              this.axios
+                .post("/api/get_reply_list", {
+                  article_id: this.authorID,
+                  skip: 0,
+                  limit: 5,
+                  reply_comment_id: this.pllb[this.ejsy]._id,
+                  user_id: localStorage.getItem("uid"),
+                })
+                .then((res) => {
+                  console.log(res.data.data);
+                  this.ejplllb = res.data.data;
+                });
+            } else {
+            }
           });
       } else {
         this.$toast("请先登录");
@@ -301,17 +304,16 @@ this.pllb[this.ejsy].reply_num++
         .post("/api/get_reply_list", {
           skip: 0,
           limit: 5,
-          comment_type:1,
+          comment_type: 1,
           user_id: localStorage.getItem("uid"),
           reply_comment_id: this.pllb[i]._id,
           article_id: this.authorID,
-
         })
         .then((res) => {
           console.log(res.data);
           this.ejplllb = res.data.data;
         });
-    },    //<!-- 点击回复出现二级评论 -->
+    }, //<!-- 点击回复出现二级评论 -->
     onSubmit(values) {
       this.axios
         .post("/api/add_comment", {
@@ -437,26 +439,24 @@ this.pllb[this.ejsy].reply_num++
             content: this.value,
           })
           .then((res) => {
-
             this.$toast(res.data.msg);
-            if(res.data.code==0){
-this.value=''
-          this.axios
-              .post("/api/get_comment_list", {
-                article_id: this.authorID,
-                skip: 0,
-                limit: 10,
-                user_id: localStorage.getItem("uid"),
-              })
-              .then((res) => {
-                // console.log(res);
-                this.pllb = res.data.data;
-                // console.log(this.pllb);
-                // console.log(this.pllb.info);
-              });    
+            if (res.data.code == 0) {
+              this.value = "";
+              this.axios
+                .post("/api/get_comment_list", {
+                  article_id: this.authorID,
+                  skip: 0,
+                  limit: 10,
+                  user_id: localStorage.getItem("uid"),
+                })
+                .then((res) => {
+                  // console.log(res);
+                  this.pllb = res.data.data;
+                  // console.log(this.pllb);
+                  // console.log(this.pllb.info);
+                });
             }
             // console.log(res.data.msg);
-            
           });
       } else {
         this.$toast("请先登录");
@@ -502,7 +502,7 @@ this.value=''
         this.is_like = res.data.data.is_like;
         this.wzxq = res.data.data;
         this.articleID = res.data.data.article_id;
-            this.loading = false;
+        this.loading = false;
         // console.log(res.data);
         // console.log(this.wzxq);
       });
@@ -559,8 +559,7 @@ this.value=''
 
 .ejpl-three {
   width: 200px;
-  span{
-
+  span {
   }
 }
 .ejpl-buttom {
@@ -574,7 +573,7 @@ this.value=''
   font-size: 18px;
   font-style: normal;
   margin: 0;
-    span{
+  span {
     font-size: 12px;
   }
 }
@@ -665,8 +664,6 @@ this.value=''
   height: 30px;
   margin-left: 10px;
   float: left;
-
-  // overflow: hidden;
 }
 .detail-three-list h4 {
   width: 100px;
@@ -683,16 +680,6 @@ this.value=''
   white-space: nowrap;
   font-size: 18px;
 }
-
-// .detail-three-list h3 {
-//   width: 375px;
-//   margin: 0px;
-//   /* margin: 2px 10px; */
-//   height: 15px;
-//   float: left;
-//   font-size: 8px;
-//   // font-style: none;
-// }
 .detail-three-right {
   width: 50px;
   height: 30px;
@@ -714,8 +701,6 @@ this.value=''
   margin: 0px 0px;
   width: 375px;
   font-size: 18px;
-  // box-sizing: border-box;
-  // padding: 0 10px;
 }
 .detail-five {
   margin-top: 20px;
@@ -738,11 +723,6 @@ this.value=''
   height: 50px;
   border-radius: 50px;
 }
-// .detail-five-right-left {
-//   width: 1px;
-//   height: 1px;
-//   float: left;
-// }
 .detail-five-list-right h3,
 h4 {
   word-break: break-all;

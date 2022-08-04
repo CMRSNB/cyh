@@ -245,9 +245,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.home {
-  // background-color: rgb(226, 225, 225);
-}
 .home-tow .van-tabs__nav .van-tabs__line {
   background-color: #ccc;
 }
@@ -301,18 +298,15 @@ export default {
 
 .img2 {
   width: 375px;
-  // height: 250px;
-  // text-align: center;
   display: flex;
-  // justify-content: space-around;
-  // margin: 0 auto;
-
   justify-content: flex-end;
 }
+::v-deep .van-image__img {
+  border-radius: 10px;
+} //图片设值
 .img2 .van-image {
   width: 100px;
   height: 100px;
-  border-radius: 20px;
   margin-right: 10px;
 }
 .home-three {
